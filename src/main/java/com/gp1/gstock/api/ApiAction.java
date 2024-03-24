@@ -1,6 +1,6 @@
 package com.gp1.gstock.api;
 
-import com.gp1.gstock.kis.AccessTokenManager;
+import com.gp1.gstock.stock.kis.AccessTokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -8,11 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import static com.gp1.gstock.kis.KisConstants.APP_KEY;
-import static com.gp1.gstock.kis.KisConstants.APP_SECRET_KEY;
+import static com.gp1.gstock.stock.kis.KisConstants.APP_KEY;
+import static com.gp1.gstock.stock.kis.KisConstants.APP_SECRET_KEY;
 
 @Component
 public class ApiAction {

@@ -1,6 +1,6 @@
 package com.gp1.gstock.api.obj;
 
-import com.gp1.gstock.data.dto.KisStockPrice;
+import com.gp1.gstock.stock.dto.KisStockPrice;
 import lombok.Data;
 
 @Data

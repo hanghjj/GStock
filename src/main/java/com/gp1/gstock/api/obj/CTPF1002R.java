@@ -1,7 +1,7 @@
 package com.gp1.gstock.api.obj;
 
-import com.gp1.gstock.data.dto.StockDto;
-import com.gp1.gstock.utils.DateTimeUtils;
+import com.gp1.gstock.stock.dto.StockDto;
+import com.gp1.gstock.common.utils.DateTimeUtils;
 import lombok.Data;
 
 @Data
