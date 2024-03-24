@@ -2,7 +2,7 @@ package com.gp1.gstock.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.gp1.gstock.aop.AopController;
+import com.gp1.gstock.common.aop.AopController;
 import com.gp1.gstock.api.obj.CTPF1002R;
 import com.gp1.gstock.api.obj.CustomObjectMapper;
 import com.gp1.gstock.api.obj.FHKST01010100;

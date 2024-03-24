@@ -1,12 +1,11 @@
 package com.gp1.gstock.service.impl;
 
-import com.gp1.gstock.aop.AopService;
+import com.gp1.gstock.common.aop.AopService;
 import com.gp1.gstock.data.dao.StockDAO;
 import com.gp1.gstock.data.dto.StockDto;
 import com.gp1.gstock.data.dto.StockPriceDto;
 import com.gp1.gstock.data.entity.Stock;
 import com.gp1.gstock.data.entity.StockPrice;
-import com.gp1.gstock.data.entity.StockPriceId;
 import com.gp1.gstock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

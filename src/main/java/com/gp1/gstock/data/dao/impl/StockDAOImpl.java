@@ -1,6 +1,6 @@
 package com.gp1.gstock.data.dao.impl;
 
-import com.gp1.gstock.aop.AopService;
+import com.gp1.gstock.common.aop.AopService;
 import com.gp1.gstock.data.dao.StockDAO;
 import com.gp1.gstock.data.entity.Stock;
 import com.gp1.gstock.data.entity.StockId;

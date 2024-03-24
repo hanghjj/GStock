@@ -1,7 +1,7 @@
 package com.gp1.gstock.controller.Example;
 
 
-import com.gp1.gstock.aop.AopController;
+import com.gp1.gstock.common.aop.AopController;
 import com.gp1.gstock.data.dto.MemberDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
