@@ -3,7 +3,7 @@ package com.gp1.gstock.example.controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/delete")
+@RequestMapping("/api/v1/delete")
 public class GstockDeleteController {
 
     @DeleteMapping(value = "/pathvar/{variable}")

@@ -11,16 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/put")
+@RequestMapping("/api/v1/put")
 public class GstockPutController {
     @PutMapping(value = "/member")
     public String putMember1(@RequestBody Map<String, String> putData){
 
         StringBuilder sb = new StringBuilder();
 
-        putData.entrySet().forEach(map -> {
-            sb.append(map.getKey() + " : " + map.getValue());
-        });
+        putData.forEach((key, value) -> sb.append(key).append(" : ").append(value));
 
         return sb.toString();
     }

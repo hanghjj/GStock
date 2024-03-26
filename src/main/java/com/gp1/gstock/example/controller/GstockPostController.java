@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/post")
+@RequestMapping("/api/v1/post")
 public class GstockPostController {
     @RequestMapping(value = "/hello", method = RequestMethod.POST)
     public String postExample(){
