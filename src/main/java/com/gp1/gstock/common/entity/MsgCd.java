@@ -1,7 +1,9 @@
 package com.gp1.gstock.common.entity;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -13,9 +15,10 @@ import javax.persistence.*;
         initialValue = 1,
         allocationSize = 1
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class MsgCd {
+public class MsgCd extends BaseEntity{
     @Id
     @GeneratedValue(
         strategy= GenerationType.SEQUENCE,

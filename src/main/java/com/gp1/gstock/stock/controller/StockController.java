@@ -1,10 +1,11 @@
 package com.gp1.gstock.stock.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
 import com.gp1.gstock.api.obj.CTPF1002R;
 import com.gp1.gstock.api.obj.CustomObjectMapper;
 import com.gp1.gstock.api.obj.FHKST01010100;
+import com.gp1.gstock.common.Exception.CustomException;
+import com.gp1.gstock.common.constants.BizConstants;
 import com.gp1.gstock.stock.dto.KisStockPrice;
 import com.gp1.gstock.stock.dto.SrtnCdDto;
 import com.gp1.gstock.stock.dto.StockDto;
@@ -13,6 +14,8 @@ import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.kis.KisConstants;
 import com.gp1.gstock.stock.kis.KisService;
 import com.gp1.gstock.stock.service.StockService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,33 +29,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/stock")
 @AllArgsConstructor
 @Slf4j
 @Tag(name = "Stock", description = "주식 관련 API")
-public class StockController{
+public class StockController {
     private final StockService stockService;
     private final KisService kisService;
     private final CustomObjectMapper mapper;
 
     @GetMapping("/getstock")
-    @Tag(name = "Stock", description = "DB에 저장된 주식 정보 조회")
-    public ResponseEntity<Stock> getStock(String bseDt, String srtnCd) {
+    @Operation(summary = "주식정보 조회(DB)", description = "DB에 저장된 주식 정보 조회")
+    @Tag(name = "Stock")
+    public ResponseEntity<Stock> getStock(@Parameter(name = "bseDt", description = "기준일자") @RequestParam(value = "bseDt") String bseDt,
+                                          @Parameter(name = "srtnCd", description = "종목코드") @RequestParam(value = "srtnCd") String srtnCd) {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.getStock(bseDt, srtnCd));
     }
 
-    @GetMapping("/code/{name}")
-    @Tag(name = "Stock", description = "종목명, 종목코드 조회")
-    public ResponseEntity<List<SrtnCdDto>> getSrtnCd(@PathVariable("name") String name) throws JsonProcessingException {
+    @GetMapping("/code/{stckNm}")
+    @Operation(summary = "종목코드 조회", description = "종목명, 종목코드 조회")
+    @Tag(name = "Stock")
+    public ResponseEntity<List<SrtnCdDto>> getSrtnCd(@Parameter(name = "stckNm", description = "종목명") @PathVariable("stckNm") String stckNm) throws JsonProcessingException {
         List<SrtnCdDto> modelList = new ArrayList<>();
-        String url = "https://m.stock.naver.com/api/json/search/searchListJson.nhn?keyword=" + name;
+        String url = "https://m.stock.naver.com/api/json/search/searchListJson.nhn?keyword=" + stckNm;
         Document doc = null;
         try {
             doc = Jsoup.connect(url).header("content-type", "application/json;charset=UTF-8")
@@ -64,35 +71,35 @@ public class StockController{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        String stockJsonList = doc.text();
-
-        System.out.println(stockJsonList);
+        String stockJsonList;
+        try {
+            stockJsonList = doc.text();
+        } catch (NullPointerException e) {
+            throw new CustomException(BizConstants.DEFAULT_ERR_MSG.getVal());
+        }
 
         JSONArray array = new JSONObject(stockJsonList).getJSONObject("result").getJSONArray("d");
-        modelList = array.toList().stream().map(o ->{
-            try {
-                Gson gson = new Gson();
-                return mapper.readValue(gson.toJson(o),SrtnCdDto.class);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
-
+        modelList = Arrays.stream(mapper.readValue(array.toString(), SrtnCdDto[].class))
+                          .filter(s -> {
+                                        return s.getNm().contains(stckNm);})
+                          .toList();
+        if (modelList.size() == 0) {
+            throw new CustomException("stock.search.fail");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(modelList);
     }
 
     @GetMapping("/kis/inquiry/{id}")
-    @Tag(name = "Stock", description = "[" + KisConstants.DOMESTIC_STOCK_PRICE_KEY + "] 한국투자증권 주식 현재가 조회")
-    public ResponseEntity<StockPriceDto> getKisStockPrice(@PathVariable("id") String id) throws JsonProcessingException {
-        Gson gson = new Gson();
+    @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_PRICE_KEY + "] 한국투자증권 주식 현재가 조회", description = "KIS 주식 현재가 조회")
+    @Tag(name = "Stock")
+    public ResponseEntity<StockPriceDto> getKisStockPrice(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
         //주식 가격 조회 및 Insert
-        String stockPrice = kisService.getDomesticStockPrice(id);
+        String stockPrice = kisService.getDomesticStockPrice(srtnCd);
         JSONObject output = new JSONObject(stockPrice).getJSONObject("output");
         //convert json to apiObj
         FHKST01010100 fhkst01010100 = mapper.readValue(output.toString(), FHKST01010100.class);
         // apiObj to KisStockPrice
-        KisStockPrice convert = fhkst01010100.convert(id);
+        KisStockPrice convert = fhkst01010100.convert(srtnCd);
         //convert KisStockPrice to StockPrice
         StockPriceDto stockPriceDto = convert.convert();
         //insert into Table
@@ -102,8 +109,9 @@ public class StockController{
     }
 
     @GetMapping("/kis/info/{id}")
-    @Tag(name = "Stock", description = "[" + KisConstants.DOMESTIC_STOCK_INFO_KEY + "] 한국투자증권 주식 기본 정보 조회")
-    public ResponseEntity<StockDto> getKisStockInfo(@PathVariable("id") String id) throws JsonProcessingException {
+    @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_INFO_KEY + "] 한국투자증권 주식 기본 정보 조회", description = "KIS 주식 기본 정보 조회")
+    @Tag(name = "Stock")
+    public ResponseEntity<StockDto> getKisStockInfo(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("id") String id) throws JsonProcessingException {
         String stockInfo = kisService.getDomesticStockInfo(id);
         JSONObject output = new JSONObject(stockInfo).getJSONObject("output");
         //convert json to apiObj

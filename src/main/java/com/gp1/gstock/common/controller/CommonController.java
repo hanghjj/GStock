@@ -1,23 +1,56 @@
 package com.gp1.gstock.common.controller;
 
+import com.gp1.gstock.common.Exception.CustomException;
 import com.gp1.gstock.common.entity.MsgCd;
 import com.gp1.gstock.common.service.CommonService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/comm")
 @AllArgsConstructor
+@Tag(name = "Common", description = "공통 기능 관련 API")
 public class CommonController {
     private final CommonService commonService;
+
     @GetMapping("/msg/add")
-    public ResponseEntity<MsgCd> insertNewMessage (String cd, String msg){
-        MsgCd msgCd = new MsgCd(cd,msg);
+    @Operation(summary = "신규 메세지코드 등록", description = "메세지 코드 신규등록")
+    @Tag(name = "Common")
+    public ResponseEntity<MsgCd> insertNewMessage(
+            @Parameter(name = "code", description = "메세지코드") @RequestParam(value = "code") String code,
+            @Parameter(name = "massage", description = "메세지") @RequestParam(value = "massage") String massage
+    ) throws CustomException {
+        MsgCd msgCd = new MsgCd(code, massage);
         commonService.insertMsgCd(msgCd);
         return ResponseEntity.status(HttpStatus.OK).body(msgCd);
+    }
+
+    @GetMapping("/msg/err")
+    @Operation(summary = "CustomExeption 발생", description = "메세지 코드 전달, 에러메세지 리턴")
+    @Tag(name = "Common")
+    public ResponseEntity<MsgCd> invokeError(
+            @Parameter(name = "msgCd", description = "메세지코드") @RequestParam(value = "msgCd") String msgCd,
+            @Parameter(name = "parameters", description = "매개변수 리스트(쉼표로 구분)",
+                    examples = {
+                            @ExampleObject(name = "params", value = "삼성전자,SK하이닉스")
+                    }
+            ) @RequestParam(value = "parameters", required = false) String parameters
+    ) throws CustomException {
+        if (parameters == null) throw new CustomException(msgCd);
+        List<String> param = Arrays.stream(parameters.split(","))
+                                   .toList();
+        throw new CustomException(msgCd, param);
     }
 }
