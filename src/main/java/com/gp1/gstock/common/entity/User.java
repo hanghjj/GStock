@@ -1,4 +1,4 @@
-package com.gp1.gstock.user.entity;
+package com.gp1.gstock.common.entity;
 
 import com.gp1.gstock.common.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -22,6 +22,8 @@ public class User extends BaseEntity {
     private String id;
     private String password;
     private String email;
+    @Column(name = "USER_SE_CD")
+    private String userSeCd;
     @Column(name = "PHONE_NUM")
     private String phoneNum;
     @Column(name = "REG_DT")

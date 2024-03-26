@@ -2,7 +2,9 @@ package com.gp1.gstock.common.controller;
 
 import com.gp1.gstock.common.Exception.CustomException;
 import com.gp1.gstock.common.entity.MsgCd;
+import com.gp1.gstock.common.entity.User;
 import com.gp1.gstock.common.service.CommonService;
+import com.gp1.gstock.common.utils.DateTimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,10 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,5 +51,16 @@ public class CommonController {
         List<String> param = Arrays.stream(parameters.split(","))
                                    .toList();
         throw new CustomException(msgCd, param);
+    }
+
+    @PostMapping(value = "/user/register")
+    @Operation(summary = "신규가입", description = "신규 회원가입 데이터 저장")
+    @Tag(name = "Common")
+    public ResponseEntity<User> insertNewUser(@Parameter(name = "user", description = "회원가입정보") @RequestBody User user){
+        System.out.println(user.toString());
+        user.setMdfDt(DateTimeUtils.getDateFormat("yyyyMMdd"));
+        user.setRegDt(DateTimeUtils.getDateFormat("yyyyMMdd"));
+        commonService.insertUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
