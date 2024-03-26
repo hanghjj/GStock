@@ -2,7 +2,6 @@ package com.gp1.gstock.stock.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.gp1.gstock.common.aop.AopController;
 import com.gp1.gstock.api.obj.CTPF1002R;
 import com.gp1.gstock.api.obj.CustomObjectMapper;
 import com.gp1.gstock.api.obj.FHKST01010100;
@@ -16,6 +15,7 @@ import com.gp1.gstock.stock.kis.KisService;
 import com.gp1.gstock.stock.service.StockService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -35,8 +35,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/stock")
 @AllArgsConstructor
+@Slf4j
 @Tag(name = "Stock", description = "주식 관련 API")
-public class StockController extends AopController{
+public class StockController{
     private final StockService stockService;
     private final KisService kisService;
     private final CustomObjectMapper mapper;

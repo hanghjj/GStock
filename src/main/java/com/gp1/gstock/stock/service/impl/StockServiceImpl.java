@@ -1,6 +1,5 @@
 package com.gp1.gstock.stock.service.impl;
 
-import com.gp1.gstock.common.aop.AopService;
 import com.gp1.gstock.stock.dao.StockDAO;
 import com.gp1.gstock.stock.dto.StockDto;
 import com.gp1.gstock.stock.dto.StockPriceDto;
@@ -8,11 +7,13 @@ import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.entity.StockPrice;
 import com.gp1.gstock.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StockServiceImpl extends AopService implements StockService {
+@Slf4j
+public class StockServiceImpl implements StockService {
 
     private final StockDAO stockDAO;
 

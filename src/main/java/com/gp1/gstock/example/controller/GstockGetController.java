@@ -1,17 +1,18 @@
 package com.gp1.gstock.example.controller;
 
 
-import com.gp1.gstock.common.aop.AopController;
 import com.gp1.gstock.example.dto.MemberDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/get")
-public class GstockGetController extends AopController {
+public class GstockGetController{
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String getHello(){

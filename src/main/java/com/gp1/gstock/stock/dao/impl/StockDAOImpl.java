@@ -1,12 +1,12 @@
 package com.gp1.gstock.stock.dao.impl;
 
-import com.gp1.gstock.common.aop.AopService;
 import com.gp1.gstock.stock.dao.StockDAO;
 import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.entity.StockId;
 import com.gp1.gstock.stock.entity.StockPrice;
 import com.gp1.gstock.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -15,7 +15,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class StockDAOImpl extends AopService implements StockDAO {
+@Slf4j
+public class StockDAOImpl implements StockDAO {
 
     private final StockRepository stockRepository;
     private final EntityManager em;
