@@ -1,6 +1,7 @@
 package com.gp1.gstock.common.controller;
 
 import com.gp1.gstock.common.Exception.CustomException;
+import com.gp1.gstock.common.dto.UserLogInVerificationDto;
 import com.gp1.gstock.common.entity.MsgCd;
 import com.gp1.gstock.common.entity.User;
 import com.gp1.gstock.common.service.CommonService;
@@ -69,22 +70,11 @@ public class CommonController {
     @PostMapping(value = "/user/signin")
     @Operation(summary = "로그인", description = "회원 로그인처리")
     @Tag(name = "Common")
-    public ResponseEntity<User> signIn(
+    public ResponseEntity<UserLogInVerificationDto> signIn(
             @Parameter(name = "user", description = "로그인정보") @RequestBody User user) {
-        User signedUser = commonService.signIn(user);
-        if (signedUser == null) throw new CustomException("common.login.fail");
 
-        signedUser.setPassword("ENCODED");
-
-
-        /*
-        *
-        * JWT 토큰
-        *
-        *
-        * */
-
-
+        UserLogInVerificationDto signedUser = commonService.signIn(user);
+        //MVC controller로 옮길 예정
         return ResponseEntity.status(HttpStatus.OK).body(signedUser);
     }
 }

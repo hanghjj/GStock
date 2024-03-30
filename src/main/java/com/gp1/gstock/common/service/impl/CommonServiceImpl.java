@@ -1,6 +1,7 @@
 package com.gp1.gstock.common.service.impl;
 
 import com.gp1.gstock.common.Exception.CustomException;
+import com.gp1.gstock.common.dto.UserLogInVerificationDto;
 import com.gp1.gstock.common.entity.MsgCd;
 import com.gp1.gstock.common.entity.User;
 import com.gp1.gstock.common.repository.MsgCdRepository;
@@ -55,17 +56,21 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public List<User> getAllUser() throws CustomException {
-        return em.createQuery("SELECT U FROM GS_USER U",User.class)
-                 .getResultList().stream().toList();
+        return em.createQuery("SELECT U FROM GS_USER U", User.class)
+                .getResultList()
+                .stream()
+                .toList();
     }
 
     @Override
-    public User signIn(User logUser) {
-        User user = em.find(User.class,logUser.getId());
-        if(encoder.matches(logUser.getPassword(), user.getPassword())) { // pw 일치 여부 확인
-            return user;
-        }else{
-            return null;
+    public UserLogInVerificationDto signIn(User logUser) {
+        User user = em.find(User.class, logUser.getId());
+        if (user == null) { //등록되지 않은 아이디
+            return new UserLogInVerificationDto(null, false);
+        } else if (encoder.matches(logUser.getPassword(), user.getPassword())) { // pw 일치 여부 확인
+            return new UserLogInVerificationDto(user.getId(), true);
+        } else {
+            return new UserLogInVerificationDto(null, false);
         }
     }
 }
