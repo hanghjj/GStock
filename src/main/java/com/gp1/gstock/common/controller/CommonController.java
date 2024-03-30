@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -49,18 +50,41 @@ public class CommonController {
     ) throws CustomException {
         if (parameters == null) throw new CustomException(msgCd);
         List<String> param = Arrays.stream(parameters.split(","))
-                                   .toList();
+                .toList();
         throw new CustomException(msgCd, param);
     }
 
     @PostMapping(value = "/user/register")
     @Operation(summary = "신규가입", description = "신규 회원가입 데이터 저장")
     @Tag(name = "Common")
-    public ResponseEntity<User> insertNewUser(@Parameter(name = "user", description = "회원가입정보") @RequestBody User user){
+    public ResponseEntity<User> insertNewUser(@Parameter(name = "user", description = "회원가입정보") @RequestBody User user) {
         System.out.println(user.toString());
         user.setMdfDt(DateTimeUtils.getDateFormat("yyyyMMdd"));
         user.setRegDt(DateTimeUtils.getDateFormat("yyyyMMdd"));
         commonService.insertUser(user);
+        user.setPassword("ENCODED");
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @PostMapping(value = "/user/signin")
+    @Operation(summary = "로그인", description = "회원 로그인처리")
+    @Tag(name = "Common")
+    public ResponseEntity<User> signIn(
+            @Parameter(name = "user", description = "로그인정보") @RequestBody User user) {
+        User signedUser = commonService.signIn(user);
+        if (signedUser == null) throw new CustomException("common.login.fail");
+
+        signedUser.setPassword("ENCODED");
+
+
+        /*
+        *
+        * JWT 토큰
+        *
+        *
+        * */
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(signedUser);
     }
 }

@@ -41,6 +41,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:3.2.3'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.4'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation 'junit:junit:4.13.1'
@@ -59,6 +61,9 @@ dependencies {
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
 	// https://mvnrepository.com/artifact/org.assertj/assertj-core
 	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.3'
+	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+
 
 }
 

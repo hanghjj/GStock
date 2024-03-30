@@ -12,5 +12,6 @@ public interface CommonService {
     public void insertUser(User user) throws CustomException;
     public User getUser(String id) throws CustomException;
     public List<User> getAllUser() throws CustomException;
+    public User signIn(User user);
 
 }
