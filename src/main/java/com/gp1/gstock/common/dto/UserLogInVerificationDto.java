@@ -11,4 +11,5 @@ import lombok.EqualsAndHashCode;
 public class UserLogInVerificationDto extends BaseEntity {
     String id;
     boolean verified;
+    String token;
 }

@@ -1,6 +1,7 @@
 package com.gp1.gstock.common.service.impl;
 
 import com.gp1.gstock.common.Exception.CustomException;
+import com.gp1.gstock.common.aop.AuthJwtService;
 import com.gp1.gstock.common.dto.UserLogInVerificationDto;
 import com.gp1.gstock.common.entity.MsgCd;
 import com.gp1.gstock.common.entity.User;
@@ -24,6 +25,7 @@ public class CommonServiceImpl implements CommonService {
     private final EntityManager em;
     private final MsgCdRepository repository;
     private final PasswordEncoder encoder;
+    private final AuthJwtService authService;
 
     @Override
     public void insertMsgCd(MsgCd msgCd) throws CustomException {
@@ -65,12 +67,13 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public UserLogInVerificationDto signIn(User logUser) {
         User user = em.find(User.class, logUser.getId());
+        String token = authService.getToken(logUser.getId());
         if (user == null) { //등록되지 않은 아이디
-            return new UserLogInVerificationDto(null, false);
+            return new UserLogInVerificationDto(null, false, null);
         } else if (encoder.matches(logUser.getPassword(), user.getPassword())) { // pw 일치 여부 확인
-            return new UserLogInVerificationDto(user.getId(), true);
+            return new UserLogInVerificationDto(user.getId(), true, token);
         } else {
-            return new UserLogInVerificationDto(null, false);
+            return new UserLogInVerificationDto(null, false, null);
         }
     }
 }

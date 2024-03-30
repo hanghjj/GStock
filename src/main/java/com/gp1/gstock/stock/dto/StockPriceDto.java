@@ -2,8 +2,10 @@ package com.gp1.gstock.stock.dto;
 
 import com.gp1.gstock.common.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class StockPriceDto extends BaseEntity {
 
     private String bseDt;
