@@ -1,18 +1,16 @@
 package com.gp1.gstock.stock.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gp1.gstock.api.obj.CTPF1002R;
 import com.gp1.gstock.api.obj.CustomObjectMapper;
-import com.gp1.gstock.api.obj.FHKST01010100;
 import com.gp1.gstock.common.Exception.CustomException;
 import com.gp1.gstock.common.constants.BizConstants;
-import com.gp1.gstock.stock.dto.KisStockPrice;
 import com.gp1.gstock.stock.dto.SrtnCdDto;
 import com.gp1.gstock.stock.dto.StockDto;
 import com.gp1.gstock.stock.dto.StockPriceDto;
 import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.kis.KisConstants;
 import com.gp1.gstock.stock.kis.KisService;
+import com.gp1.gstock.stock.service.impl.ObjectMappingService;
 import com.gp1.gstock.stock.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/stock")
@@ -45,6 +45,7 @@ public class StockController {
     private final StockService stockService;
     private final KisService kisService;
     private final CustomObjectMapper mapper;
+    private final ObjectMappingService objectMappingService;
 
     @GetMapping("/getstock")
     @Operation(summary = "주식정보 조회(DB)", description = "DB에 저장된 주식 정보 조회")
@@ -89,37 +90,68 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(modelList);
     }
 
-    @GetMapping("/kis/inquiry/{id}")
+    @GetMapping("/kis/inquiry/{srtnCd}")
     @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_PRICE_KEY + "] 한국투자증권 주식 현재가 조회", description = "KIS 주식 현재가 조회")
     @Tag(name = "Stock")
     public ResponseEntity<StockPriceDto> getKisStockPrice(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
         //주식 가격 조회 및 Insert
+        String stockInfo = kisService.getDomesticStockInfo(srtnCd);
         String stockPrice = kisService.getDomesticStockPrice(srtnCd);
-        JSONObject output = new JSONObject(stockPrice).getJSONObject("output");
-        //convert json to apiObj
-        FHKST01010100 fhkst01010100 = mapper.readValue(output.toString(), FHKST01010100.class);
-        // apiObj to KisStockPrice
-        KisStockPrice convert = fhkst01010100.convert(srtnCd);
-        //convert KisStockPrice to StockPrice
-        StockPriceDto stockPriceDto = convert.convert();
+        JSONObject output1 = null;
+        JSONObject output2 = null;
+        try{
+            output1 = new JSONObject(stockPrice).getJSONObject("output");
+            output2 = new JSONObject(stockInfo).getJSONObject("output");
+        }catch (JSONException e){
+            throw new CustomException("stock.search.fail");
+        }
+        //convert Json to StockPriceDto
+        StockPriceDto stockPriceDto = objectMappingService.ConvertFHKST01010100ToStockPriceDto(output1.toString(), srtnCd);
+        if(stockPriceDto.getStkPrpr()==0){
+            throw new CustomException("stock.search.fail");
+        }
+
+        //convert Json to StockDto
+        StockDto stockDto = objectMappingService.ConvertCTPF1002RToStockDto(output2.toString());
+        log.info("주식 정보 조회 " + output1.toString());
+        if(Optional.ofNullable(stockDto.getItmNm()).orElse("").length()<1){
+            throw new CustomException("stock.search.fail");
+        }
         //insert into Table
         stockService.saveStock(stockPriceDto);
-        //entityManger setting
+        stockService.saveStock(stockDto);
         return ResponseEntity.status(200).body(stockPriceDto);
     }
 
-    @GetMapping("/kis/info/{id}")
+    @GetMapping("/kis/info/{srtnCd}")
     @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_INFO_KEY + "] 한국투자증권 주식 기본 정보 조회", description = "KIS 주식 기본 정보 조회")
     @Tag(name = "Stock")
-    public ResponseEntity<StockDto> getKisStockInfo(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("id") String id) throws JsonProcessingException {
-        String stockInfo = kisService.getDomesticStockInfo(id);
-        JSONObject output = new JSONObject(stockInfo).getJSONObject("output");
-        //convert json to apiObj
-        CTPF1002R ctpf1002R = mapper.readValue(output.toString(), CTPF1002R.class);
-        //convert apiObj to StockDto
-        StockDto stockDto = ctpf1002R.convert();
-        log.info("주식 정보 조회 " + ctpf1002R.toString());
+    public ResponseEntity<StockDto> getKisStockInfo(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
+        String stockInfo = kisService.getDomesticStockInfo(srtnCd);
+        String stockPrice = kisService.getDomesticStockPrice(srtnCd);
+        JSONObject output1 = null;
+        JSONObject output2 = null;
+        try{
+            output1 = new JSONObject(stockInfo).getJSONObject("output");
+            output2 = new JSONObject(stockPrice).getJSONObject("output");
+        }catch (JSONException e){
+            throw new CustomException("stock.search.fail");
+        }
+
+        //convert Json to StockDto
+        StockDto stockDto = objectMappingService.ConvertCTPF1002RToStockDto(output1.toString());
+        log.info("주식 정보 조회 " + output1.toString());
+        if(Optional.ofNullable(stockDto.getItmNm()).orElse("").length()<1){
+            throw new CustomException("stock.search.fail");
+        }
+        //convert Json to StockPriceDto
+        StockPriceDto stockPriceDto = objectMappingService.ConvertFHKST01010100ToStockPriceDto(output2.toString(), srtnCd);
+        if(stockPriceDto.getStkPrpr()==0){
+            throw new CustomException("stock.search.fail");
+        }
+        //insert into Table
         stockService.saveStock(stockDto);
+        stockService.saveStock(stockPriceDto);
         return ResponseEntity.status(200).body(stockDto);
     }
 }
