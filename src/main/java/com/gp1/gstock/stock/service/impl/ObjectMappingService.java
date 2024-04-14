@@ -1,9 +1,7 @@
 package com.gp1.gstock.stock.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gp1.gstock.api.obj.CTPF1002R;
-import com.gp1.gstock.api.obj.CustomObjectMapper;
-import com.gp1.gstock.api.obj.FHKST01010100;
+import com.gp1.gstock.api.obj.*;
 import com.gp1.gstock.stock.dto.KisStockPrice;
 import com.gp1.gstock.stock.dto.StockDto;
 import com.gp1.gstock.stock.dto.StockPriceDto;
@@ -26,6 +24,14 @@ public class ObjectMappingService {
         //convert KisStockPrice to StockPrice
         return convert.convert();
     }
+    public StockPriceDto ConvertHHDFS00000300ToStockPriceDto(String jsonString, String srtnCd) throws JsonProcessingException {
+        //convert json to apiObj
+        HHDFS00000300 hhdfs00000300 = mapper.readValue(jsonString, HHDFS00000300.class);
+        // apiObj to KisStockPrice
+        KisStockPrice convert = hhdfs00000300.convert();
+        //convert KisStockPrice to StockPrice
+        return convert.convert();
+    }
     public KisStockPrice ConvertFHKST01010100ToKisStockPrice(String jsonString, String srtnCd) throws JsonProcessingException {
         //convert json to apiObj
         FHKST01010100 fhkst01010100 = mapper.readValue(jsonString, FHKST01010100.class);
@@ -37,5 +43,12 @@ public class ObjectMappingService {
         CTPF1002R ctpf1002R = mapper.readValue(jsonString, CTPF1002R.class);
         //convert apiObj to StockDto
         return ctpf1002R.convert();
+    }
+
+    public StockDto ConvertCTPF1604RToStockDto(String jsonString) throws JsonProcessingException {
+        //convert json to apiObj
+        CTPF1604R ctpf1604R = mapper.readValue(jsonString, CTPF1604R.class);
+        //convert apiObj to StockDto
+        return ctpf1604R.convert();
     }
 }

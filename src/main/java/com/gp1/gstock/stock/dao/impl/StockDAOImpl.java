@@ -2,14 +2,13 @@ package com.gp1.gstock.stock.dao.impl;
 
 import com.gp1.gstock.stock.dao.StockDAO;
 import com.gp1.gstock.stock.entity.Stock;
-import com.gp1.gstock.stock.entity.StockId;
 import com.gp1.gstock.stock.entity.StockPrice;
+import com.gp1.gstock.stock.repository.StockPriceRepository;
 import com.gp1.gstock.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ import java.util.Optional;
 public class StockDAOImpl implements StockDAO {
 
     private final StockRepository stockRepository;
-    private final EntityManager em;
+    private final StockPriceRepository stockPriceRepository;
     @Override
     public void insertStock(Stock stock){
         log.info("Insert Stock : \n" + stock.toString());
@@ -29,15 +28,15 @@ public class StockDAOImpl implements StockDAO {
     @Transactional
     public void insertStockPrice(StockPrice stockPrice){
         log.info("Insert Stock price: \n" + stockPrice.toString());
-        em.persist(stockPrice);
+        stockPriceRepository.save(stockPrice);
     }
     @Override
-    public Stock selectStock(String bseDt, String srtnCd){
-        return stockRepository.findById(new StockId(bseDt,srtnCd)).orElse(new Stock());
+    public Stock selectStock(String srtnCd){
+        return stockRepository.findById(srtnCd).orElse(new Stock());
     }
     @Override
-    public void updateStock(String bseDt, String srtnCd) throws Exception{
-        Optional<Stock> target = stockRepository.findById(new StockId(bseDt,srtnCd));
+    public void updateStock(String srtnCd) throws Exception{
+        Optional<Stock> target = stockRepository.findById(srtnCd);
 
         if(target.isPresent()){
             Stock stock = target.get();
@@ -47,8 +46,8 @@ public class StockDAOImpl implements StockDAO {
         }
     }
     @Override
-    public void deleteStock(String bseDt, String srtnCd) throws Exception{
-        Optional<Stock> target = stockRepository.findById(new StockId(bseDt,srtnCd));
+    public void deleteStock(String srtnCd) throws Exception{
+        Optional<Stock> target = stockRepository.findById(srtnCd);
         if(target.isPresent()){
             Stock stock = target.get();
             stockRepository.delete(stock);

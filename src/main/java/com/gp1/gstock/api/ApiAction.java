@@ -25,6 +25,7 @@ public class ApiAction {
          headers.set("appkey", APP_KEY);
          headers.set("appsecret", APP_SECRET_KEY);
          headers.set("tr_id", action);
+         headers.set("custtype","P");
 
          HttpEntity<String> entity = new HttpEntity<String>("", headers);
 

@@ -67,10 +67,8 @@ public class CTPF1002R {
     public StockDto convert(){
         return StockDto
                 .builder()
-                .bseDt(DateTimeUtils.getDateFormat("yyyyMMdd"))
                 .itmNm(this.prdt_abrv_name)
                 .srtnCd(this.pdno.replaceAll("00000A",""))
-                .mrktTotAmt(Double.parseDouble(this.cpta))
                 .domeForeSeCd(this.pdno.matches(".*[0-9].*")?"D":"F")
                 .build();
     }

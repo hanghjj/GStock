@@ -7,7 +7,7 @@ public interface StockDAO {
 
     void insertStock(Stock Stock);
     void insertStockPrice(StockPrice stockPrice);
-    Stock selectStock(String bseDt, String srtnCd);
-    void updateStock(String bseDt, String srtnCd) throws Exception;
-    void deleteStock(String bseDt, String srtnCd) throws Exception;
+    Stock selectStock(String srtnCd);
+    void updateStock(String srtnCd) throws Exception;
+    void deleteStock(String srtnCd) throws Exception;
 }

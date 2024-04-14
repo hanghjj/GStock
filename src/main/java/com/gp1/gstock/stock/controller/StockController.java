@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.api.obj.CustomObjectMapper;
 import com.gp1.gstock.common.Exception.CustomException;
 import com.gp1.gstock.common.constants.BizConstants;
+import com.gp1.gstock.common.utils.StringUtils;
 import com.gp1.gstock.stock.dto.SrtnCdDto;
 import com.gp1.gstock.stock.dto.StockDto;
 import com.gp1.gstock.stock.dto.StockPriceDto;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -50,9 +52,8 @@ public class StockController {
     @GetMapping("/getstock")
     @Operation(summary = "주식정보 조회(DB)", description = "DB에 저장된 주식 정보 조회")
     @Tag(name = "Stock")
-    public ResponseEntity<Stock> getStock(@Parameter(name = "bseDt", description = "기준일자") @RequestParam(value = "bseDt") String bseDt,
-                                          @Parameter(name = "srtnCd", description = "종목코드") @RequestParam(value = "srtnCd") String srtnCd) {
-        return ResponseEntity.status(HttpStatus.OK).body(stockService.getStock(bseDt, srtnCd));
+    public ResponseEntity<Stock> getStock(@Parameter(name = "srtnCd", description = "종목코드") @RequestParam(value = "srtnCd") String srtnCd) {
+        return ResponseEntity.status(HttpStatus.OK).body(stockService.getStock(srtnCd));
     }
 
     @GetMapping("/code/{stckNm}")
@@ -90,45 +91,14 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(modelList);
     }
 
-    @GetMapping("/kis/inquiry/{srtnCd}")
-    @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_PRICE_KEY + "] 한국투자증권 주식 현재가 조회", description = "KIS 주식 현재가 조회")
-    @Tag(name = "Stock")
-    public ResponseEntity<StockPriceDto> getKisStockPrice(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
-        //주식 가격 조회 및 Insert
-        String stockInfo = kisService.getDomesticStockInfo(srtnCd);
-        String stockPrice = kisService.getDomesticStockPrice(srtnCd);
-        JSONObject output1 = null;
-        JSONObject output2 = null;
-        try{
-            output1 = new JSONObject(stockPrice).getJSONObject("output");
-            output2 = new JSONObject(stockInfo).getJSONObject("output");
-        }catch (JSONException e){
-            throw new CustomException("stock.search.fail");
-        }
-        //convert Json to StockPriceDto
-        StockPriceDto stockPriceDto = objectMappingService.ConvertFHKST01010100ToStockPriceDto(output1.toString(), srtnCd);
-        if(stockPriceDto.getStkPrpr()==0){
-            throw new CustomException("stock.search.fail");
-        }
-
-        //convert Json to StockDto
-        StockDto stockDto = objectMappingService.ConvertCTPF1002RToStockDto(output2.toString());
-        log.info("주식 정보 조회 " + output1.toString());
-        if(Optional.ofNullable(stockDto.getItmNm()).orElse("").length()<1){
-            throw new CustomException("stock.search.fail");
-        }
-        //insert into Table
-        stockService.saveStock(stockPriceDto);
-        stockService.saveStock(stockDto);
-        return ResponseEntity.status(200).body(stockPriceDto);
-    }
 
     @GetMapping("/kis/info/{srtnCd}")
-    @Operation(summary = "[" + KisConstants.DOMESTIC_STOCK_INFO_KEY + "] 한국투자증권 주식 기본 정보 조회", description = "KIS 주식 기본 정보 조회")
+    @Operation(summary = "한국투자증권 주식 기본 정보 조회[국내/해외]", description = "KIS 주식 기본 정보 조회")
     @Tag(name = "Stock")
     public ResponseEntity<StockDto> getKisStockInfo(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
-        String stockInfo = kisService.getDomesticStockInfo(srtnCd);
-        String stockPrice = kisService.getDomesticStockPrice(srtnCd);
+        boolean isDomestic = StringUtils.isDigit(srtnCd);
+        String stockInfo = kisService.getStockInfo(srtnCd);
+        String stockPrice = kisService.getStockPrice(srtnCd);
         JSONObject output1 = null;
         JSONObject output2 = null;
         try{
@@ -139,19 +109,22 @@ public class StockController {
         }
 
         //convert Json to StockDto
-        StockDto stockDto = objectMappingService.ConvertCTPF1002RToStockDto(output1.toString());
+        StockDto stockDto = objectMappingService.ConvertCTPF1604RToStockDto(output1.toString());
         log.info("주식 정보 조회 " + output1.toString());
         if(Optional.ofNullable(stockDto.getItmNm()).orElse("").length()<1){
             throw new CustomException("stock.search.fail");
         }
         //convert Json to StockPriceDto
-        StockPriceDto stockPriceDto = objectMappingService.ConvertFHKST01010100ToStockPriceDto(output2.toString(), srtnCd);
+        StockPriceDto stockPriceDto = isDomestic?
+                objectMappingService.ConvertFHKST01010100ToStockPriceDto(output2.toString(), srtnCd):
+                objectMappingService.ConvertHHDFS00000300ToStockPriceDto(output2.toString(),srtnCd);
         if(stockPriceDto.getStkPrpr()==0){
             throw new CustomException("stock.search.fail");
         }
         //insert into Table
         stockService.saveStock(stockDto);
         stockService.saveStock(stockPriceDto);
+        BeanUtils.copyProperties(stockPriceDto,stockDto);
         return ResponseEntity.status(200).body(stockDto);
     }
 }

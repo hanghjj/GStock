@@ -1,6 +1,7 @@
 package com.gp1.gstock.api.obj;
 
 import com.gp1.gstock.stock.dto.KisStockPrice;
+import com.gp1.gstock.stock.utils.StockUtils;
 import lombok.Data;
 
 @Data
@@ -94,7 +95,7 @@ public class FHKST01010100 {
         a.setRprsMrktKorName(this.rprs_mrkt_kor_name);
         a.setStckPrpr(Double.parseDouble(this.stck_prpr));
         a.setPrdyVrss(Double.parseDouble(this.prdy_vrss));
-        a.setPrdyVrssSign(this.prdy_vrss_sign);
+        a.setPrdyVrssSign(StockUtils.getVrssSign(this.prdy_vrss_sign));
         a.setPrdyCtrt(Double.parseDouble(this.prdy_ctrt));
         a.setStckOprc(Double.parseDouble(this.stck_oprc));
         a.setStckHgpr(Double.parseDouble(this.stck_hgpr));

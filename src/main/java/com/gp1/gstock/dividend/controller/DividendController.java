@@ -24,7 +24,7 @@ public class DividendController {
 
     private final DividendService service;
 
-    @Operation(summary = "배당 조회", description = "배당금을 조회한다.")
+    @Operation(summary = "배당 조회", description = "배당금을 DB에서 조회한다.")
     @GetMapping("/search")
     @Tag(name = "Dividend")
     public ResponseEntity<Dividend> getDividend(

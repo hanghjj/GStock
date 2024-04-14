@@ -31,6 +31,8 @@ public class KisStockPrice {
         stockPriceDto.setBseDt(DateTimeUtils.getDateFormat("yyyyMMdd"));
         stockPriceDto.setSrtnCd(this.stckShrnIscd);
         stockPriceDto.setStkPrpr(this.stckPrpr);
+        stockPriceDto.setPrdyVrss(this.prdyVrss);
+        stockPriceDto.setPrdyVrssSign(this.prdyVrssSign);
         stockPriceDto.setHgpr(this.stckHgpr);
         stockPriceDto.setLwpr(this.stckLwpr);
         stockPriceDto.setMxpr(this.stckMxpr);

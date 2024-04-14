@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,29 +18,19 @@ import javax.persistence.Table;
 @Table(name = "GS_STOCK")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Stock extends BaseEntity {
-
-    @EmbeddedId
-    private StockId stockId;
-
+    @Id
+    private String srtnCd;
     private String itmNm;
-
-    private Double mrktTotAmt;
     private String domeForeSeCd;
 
-    public Stock(String bseDt, String srtnCd, String itmNm,Double mrktTotAmt,String domeForeSeCd){
-        this.setStockId(new StockId(bseDt,srtnCd));
+    public Stock(String srtnCd, String itmNm, String domeForeSeCd) {
+        this.setSrtnCd(srtnCd);
         this.setItmNm(itmNm);
-        this.setMrktTotAmt(mrktTotAmt);
         this.setDomeForeSeCd(domeForeSeCd);
     }
 
-    public Stock(StockDto stockDto){
-        BeanUtils.copyProperties(stockDto,this);
-        this.setStockId(new StockId(stockDto.getBseDt(), stockDto.getSrtnCd()));
+    public Stock(StockDto stockDto) {
+        BeanUtils.copyProperties(stockDto, this);
     }
-
-    public String getBseDt(){return this.stockId.getBseDt();}
-    public String getSrtnCd(){return this.stockId.getSrtnCd();}
 }

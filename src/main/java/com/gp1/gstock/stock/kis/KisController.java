@@ -52,7 +52,7 @@ public class KisController {
     @GetMapping("/inquiry/{id}")
     public Mono<String> getStockPrice(@PathVariable("id") String id, Model model){
         this.token = accessTokenManager.getAccessToken();
-        String url = KisConstants.REST_BASE_URL + KisConstants.DOMESTIC_STOCK_URL + "?fid_cond_mrkt_div_code=J&fid_input_iscd=" + id;
+        String url = KisConstants.REST_BASE_URL + KisConstants.DOMESTIC_STOCK_PRICE_URL + "?fid_cond_mrkt_div_code=J&fid_input_iscd=" + id;
         return webClient.get()
                 .uri(url)
                 .header("content-type","application/json")

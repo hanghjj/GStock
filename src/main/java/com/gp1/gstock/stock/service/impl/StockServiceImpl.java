@@ -18,8 +18,8 @@ public class StockServiceImpl implements StockService {
     private final StockDAO stockDAO;
 
     @Override
-    public Stock getStock(String bseDt, String srtnCd){
-        return stockDAO.selectStock(bseDt,srtnCd);
+    public Stock getStock(String srtnCd){
+        return stockDAO.selectStock(srtnCd);
     }
     @Override
     public void saveStock(StockDto stockDto){
@@ -31,11 +31,11 @@ public class StockServiceImpl implements StockService {
         stockDAO.insertStockPrice(new StockPrice(StockPriceDto));
     }
     @Override
-    public void updateStock(String bseDt, String srtnCd) throws Exception{
-        stockDAO.updateStock(bseDt,srtnCd);
+    public void updateStock(String srtnCd) throws Exception{
+        stockDAO.updateStock(srtnCd);
     }
     @Override
-    public void deleteStock(String bseDt, String srtnCd) throws Exception{
-        stockDAO.deleteStock(bseDt,srtnCd);
+    public void deleteStock(String srtnCd) throws Exception{
+        stockDAO.deleteStock(srtnCd);
     }
 }
