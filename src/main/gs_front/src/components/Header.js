@@ -12,7 +12,7 @@ const HeaderInner = styled.div`
   background-color: #131722;
   padding: 1.5rem;
   display: flex;
-  color: rgb(207, 205, 218);
+  color: rgb(255 255 255);
   justify-content: space-between;
   width: 100%;
 
@@ -32,7 +32,7 @@ const HeaderLogo = styled.div`
   margin-right: 4.8rem;
 
   a {
-    color: rgb(207, 205, 218);
+    color: rgb(255 255 255);
     text-decoration-line: none;
   }
 `;
@@ -46,7 +46,7 @@ const HeaderNavRight = styled.div`
 `;
 
 const HeaderNavInfo = styled.div`
-  color: rgb(207, 205, 218);
+  color: rgb(255 255 255);
   margin-right: 3.2rem;
 `;
 
