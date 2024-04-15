@@ -24,9 +24,14 @@ servlet:
 spring:
     datasource:
         driver-class-name: oracle.jdbc.driver.OracleDriver
-        password: '@dminPassword1234!'
         url: jdbc:oracle:thin:@gsdb1_high?TNS_ADMIN=./src/main/resources/wallet
         username: ADMIN
+        password: '@dminPassword1234!'
+    hikari:
+        connection-timeout: 100000
+        validation-timeout: 100000
+        idle-timeout: 100000
+        max-lifetime: 420000
     jpa:
         properties:
             hibernate:

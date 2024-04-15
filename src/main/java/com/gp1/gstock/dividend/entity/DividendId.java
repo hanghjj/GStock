@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Embeddable
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class DividendId extends BaseEntity {
     @Schema(name = "기준년월")
     private String bseYm;
