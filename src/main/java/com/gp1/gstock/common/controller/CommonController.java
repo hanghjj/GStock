@@ -74,6 +74,9 @@ public class CommonController {
             @Parameter(name = "user", description = "로그인정보") @RequestBody User user) {
 
         UserLogInVerificationDto signedUser = commonService.signIn(user);
+        if(!signedUser.isVerified()){
+            throw new CustomException("common.login.fail");
+        }
         //MVC controller로 옮길 예정
         return ResponseEntity.status(HttpStatus.OK).body(signedUser);
     }

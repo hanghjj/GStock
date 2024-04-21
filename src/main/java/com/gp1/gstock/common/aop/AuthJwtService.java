@@ -15,9 +15,8 @@ import java.util.UUID;
 public class AuthJwtService {
 
     public String getToken(String id) {
-        String issuer = BizConstants.PROJECT_NAME.value();
+        String issuer = BizConstants.PROJECT_NAME;
         String subject = "Auth";
-        String audience = id;
         Date expiredAt = Date.from(Instant.now().plus(Duration.ofHours(2L)));
         Date notBeforeAt = Date.from(Instant.now());
         Date issuedAt = Date.from(Instant.now());

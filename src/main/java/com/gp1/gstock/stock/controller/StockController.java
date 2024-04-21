@@ -77,7 +77,7 @@ public class StockController {
         try {
             stockJsonList = doc.text();
         } catch (NullPointerException e) {
-            throw new CustomException(BizConstants.DEFAULT_ERR_MSG.getVal());
+            throw new CustomException(BizConstants.DEFAULT_ERR_MSG);
         }
 
         JSONArray array = new JSONObject(stockJsonList).getJSONObject("result").getJSONArray("d");

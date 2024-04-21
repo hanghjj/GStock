@@ -25,7 +25,7 @@ public class Dividend extends BaseEntity {
     private String payPerd;
 
 
-    private Dividend(String bseYm, String srtnCd){
-        this.id = new DividendId(bseYm,srtnCd);
+    private Dividend(String userId, String bseYm, String srtnCd){
+        this.id = new DividendId(userId,bseYm,srtnCd);
     }
 }
