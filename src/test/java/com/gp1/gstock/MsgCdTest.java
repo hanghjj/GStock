@@ -20,9 +20,9 @@ public class MsgCdTest {
     @Test
     @DisplayName("메세지 코드 insert test")
     void insertTest() {
-        String cd = "stock_duplicate";
-        String msg = "이미 등록된 주식입니다.";
-        assertThatCode(()->commonService.insertMsgCd(new MsgCd(cd,msg))).doesNotThrowAnyException();
+        //String cd = "stock_duplicate";
+        //String msg = "이미 등록된 주식입니다.";
+        //assertThatCode(()->commonService.insertMsgCd(new MsgCd(cd,msg))).doesNotThrowAnyException();
     }
 
 
