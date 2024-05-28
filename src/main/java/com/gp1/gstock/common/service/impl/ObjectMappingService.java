@@ -1,7 +1,9 @@
-package com.gp1.gstock.stock.service.impl;
+package com.gp1.gstock.common.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.api.obj.*;
+import com.gp1.gstock.coin.dto.CoinDto;
+import com.gp1.gstock.coin.dto.CoinOneDto;
 import com.gp1.gstock.stock.dto.KisStockPrice;
 import com.gp1.gstock.stock.dto.StockDto;
 import com.gp1.gstock.stock.dto.StockPriceDto;
@@ -50,5 +52,10 @@ public class ObjectMappingService {
         CTPF1604R ctpf1604R = mapper.readValue(jsonString, CTPF1604R.class);
         //convert apiObj to StockDto
         return ctpf1604R.convert();
+    }
+
+    public CoinDto ConvertCoinOneDtoToCoinDto(String jsonString) throws JsonProcessingException {
+        CoinOneDto coinOneDto = mapper.readValue(jsonString, CoinOneDto.class);
+        return new CoinDto(coinOneDto);
     }
 }

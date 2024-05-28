@@ -53,7 +53,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'com.oracle.database.jdbc:ojdbc10:19.3.0.0'
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4.1'
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation group: 'org.json', name: 'json', version: '20240303'
 	implementation 'org.jsoup:jsoup:1.15.3'
