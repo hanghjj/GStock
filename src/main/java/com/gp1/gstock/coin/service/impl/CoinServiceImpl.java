@@ -1,26 +1,18 @@
 package com.gp1.gstock.coin.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.JsonParser;
 import com.gp1.gstock.coin.dto.CoinDto;
-import com.gp1.gstock.coin.dto.CoinOneDto;
 import com.gp1.gstock.coin.entity.Coin;
 import com.gp1.gstock.coin.entity.CoinPrice;
+import com.gp1.gstock.coin.repository.CoinPriceRepository;
 import com.gp1.gstock.coin.repository.CoinRepository;
 import com.gp1.gstock.coin.service.CoinService;
-import com.gp1.gstock.common.constants.BizConstants;
 import com.gp1.gstock.common.service.impl.ObjectMappingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
-import org.springframework.beans.BeanUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 import static com.gp1.gstock.common.constants.BizConstants.COIN_ONE_COIN_INFO;
 import static com.gp1.gstock.common.constants.BizConstants.COIN_ONE_COIN_PRICE;
@@ -30,6 +22,7 @@ import static com.gp1.gstock.common.constants.BizConstants.COIN_ONE_COIN_PRICE;
 @AllArgsConstructor
 public class CoinServiceImpl implements CoinService {
     private final CoinRepository repository;
+    private final CoinPriceRepository priceRepository;
     private final ObjectMappingService mappingService;
 
     @Override
@@ -46,16 +39,13 @@ public class CoinServiceImpl implements CoinService {
         CoinDto resultDto = mappingService.ConvertCoinOneDtoToCoinDto(target);
         resultDto.setItmNm(name);
         resultDto.setTicker(symbol);
+        saveCoin(resultDto);
         return resultDto;
     }
 
     @Override
-    public void saveCoin(Coin coin) {
-
-    }
-
-    @Override
-    public void saveCoin(CoinPrice coinPrice) {
-
+    public void saveCoin(CoinDto coin) {
+        repository.save(new Coin(coin));
+        priceRepository.save(new CoinPrice(coin));
     }
 }
