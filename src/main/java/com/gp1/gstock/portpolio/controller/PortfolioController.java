@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @AllArgsConstructor
 @Tag(name = "Portfolio", description = "포트폴리오 관련 API")
-@RequestMapping("/api/dividend")
+@RequestMapping("/api/portfolio")
 public class PortfolioController {
 
 

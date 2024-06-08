@@ -28,8 +28,8 @@ public class CoinPrice extends BaseEntity {
     @Schema(description = "최저가")
     private Double lwpr;
 
-    public CoinPrice(CoinDto dto){
-        this.id = new CoinPriceId(DateTimeUtils.getDateFormat("yyyyMMdd"),dto.getTicker());
-        BeanUtils.copyProperties(dto,this);
+    public CoinPrice(CoinDto dto) {
+        this.id = new CoinPriceId(DateTimeUtils.getDateFormat("yyyyMMdd"), dto.getTicker());
+        BeanUtils.copyProperties(dto, this);
     }
 }
