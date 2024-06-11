@@ -1,7 +1,10 @@
 package com.gp1.gstock.stock.utils;
 
+import java.util.Optional;
+
 public class StockUtils {
     public static String getVrssSign(String code){
+        code = Optional.ofNullable(code).orElse("");
         String sign = "";
         switch (code){
             case "1":

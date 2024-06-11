@@ -29,7 +29,7 @@ public class MsgCdTest {
     @Test
     @DisplayName("메세지 코드 selectTest")
     void selectTest() {
-        String cd = "stock_duplicate";
+        String cd = "stock.duplicate";
         assertThat(commonService.selectMsgCd(cd).getMessage()).isEqualTo("이미 등록된 주식입니다.");
     }
 }
