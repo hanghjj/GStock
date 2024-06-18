@@ -11,6 +11,6 @@ public interface PortfolioService {
     List<PortfolioDto> getPortfolioDetailList(String userId, String portfolioId);
     PortfolioDto getLatestPrice(PortfolioDto dto) throws JsonProcessingException;
     void insertPortfolio(PortfolioDto portfolioDto);
-    void updatePortfolio(PortfolioDto portfolioDto);
+    void insertPortfolioDetails(PortfolioDto portfolioDto);
     void deletePortfolio(String userId, String PortfolioId);
 }

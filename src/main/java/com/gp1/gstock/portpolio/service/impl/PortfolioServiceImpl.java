@@ -2,11 +2,16 @@ package com.gp1.gstock.portpolio.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.common.Exception.CustomException;
+import com.gp1.gstock.common.utils.DateTimeUtils;
+import com.gp1.gstock.common.utils.StringUtils;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
 import com.gp1.gstock.portpolio.entity.Portfolio;
+import com.gp1.gstock.portpolio.entity.PortfolioDetail;
+import com.gp1.gstock.portpolio.entity.PortfolioDetailId;
+import com.gp1.gstock.portpolio.entity.PortfolioId;
+import com.gp1.gstock.portpolio.repository.PortfolioDetailRepository;
+import com.gp1.gstock.portpolio.repository.PortfolioRepository;
 import com.gp1.gstock.portpolio.service.PortfolioService;
-import com.gp1.gstock.stock.dto.StockDto;
-import com.gp1.gstock.stock.dto.StockPriceDto;
 import com.gp1.gstock.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,9 @@ import static com.gp1.gstock.common.constants.BizConstants.*;
 @AllArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
     private final StockService stockService;
+    private final PortfolioRepository portfolioRepository;
+    private final PortfolioDetailRepository portfolioDetailRepository;
+
     @Override
     public List<Portfolio> getPortfolioList(String userId) {
         // get portfolioId per user
@@ -35,10 +43,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         List<PortfolioDto> resultList = new ArrayList<>();
         //resultList = DAO ~~
         // update All asset prices
-        for(PortfolioDto dto : resultList){
-            try{
+        for (PortfolioDto dto : resultList) {
+            try {
                 dto = this.getLatestPrice(dto);
-            }catch (JsonProcessingException e){
+            } catch (JsonProcessingException e) {
                 throw new CustomException("portfolio.update.fail");
             }
         }
@@ -48,9 +56,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public PortfolioDto getLatestPrice(PortfolioDto dto) throws JsonProcessingException {
-        String assetSeCd = dto.getAssetSeCd();
+        String asstSeCd = dto.getAsstSeCd();
         String ticker = dto.getTicker();
-        switch (assetSeCd){
+        switch (asstSeCd) {
             case ASSET_STOCK:
                 stockService.saveStock(stockService.getStockInfoFromKis(ticker));
                 stockService.saveStock(stockService.getStockPriceFromKis(ticker));
@@ -67,12 +75,20 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public void insertPortfolio(PortfolioDto portfolioDto) {
-
+        PortfolioId portfolioId = new PortfolioId(portfolioDto.getUserId(), portfolioDto.getPortfolioId());
+        Portfolio portfolio = new Portfolio();
+        portfolio.setId(portfolioId);
+        portfolioRepository.save(portfolio);
+        if(StringUtils.isEmpty(portfolioDto.getTicker())) this.insertPortfolioDetails(portfolioDto);
     }
 
     @Override
-    public void updatePortfolio(PortfolioDto portfolioDto) {
-
+    public void insertPortfolioDetails(PortfolioDto dto) {
+        PortfolioDetailId portfolioDetailId = new PortfolioDetailId(dto.getPortfolioId(), dto.getTicker());
+        PortfolioDetail detail = new PortfolioDetail();
+        detail.setPortfolioDetailId(portfolioDetailId);
+        BeanUtils.copyProperties(dto, detail);
+        portfolioDetailRepository.save(detail);
     }
 
     @Override
