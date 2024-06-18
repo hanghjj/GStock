@@ -79,7 +79,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = new Portfolio();
         portfolio.setId(portfolioId);
         portfolioRepository.save(portfolio);
-        if(StringUtils.isEmpty(portfolioDto.getTicker())) this.insertPortfolioDetails(portfolioDto);
+        if(!StringUtils.isEmpty(portfolioDto.getTicker())) this.insertPortfolioDetails(portfolioDto);
     }
 
     @Override
