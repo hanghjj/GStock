@@ -1,6 +1,8 @@
 package com.gp1.gstock.portpolio.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gp1.gstock.coin.dto.CoinDto;
+import com.gp1.gstock.coin.service.CoinService;
 import com.gp1.gstock.common.Exception.CustomException;
 import com.gp1.gstock.common.utils.DateTimeUtils;
 import com.gp1.gstock.common.utils.StringUtils;
@@ -12,12 +14,15 @@ import com.gp1.gstock.portpolio.entity.PortfolioId;
 import com.gp1.gstock.portpolio.repository.PortfolioDetailRepository;
 import com.gp1.gstock.portpolio.repository.PortfolioRepository;
 import com.gp1.gstock.portpolio.service.PortfolioService;
+import com.gp1.gstock.stock.dto.StockDto;
+import com.gp1.gstock.stock.dto.StockPriceDto;
 import com.gp1.gstock.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +33,7 @@ import static com.gp1.gstock.common.constants.BizConstants.*;
 @AllArgsConstructor
 public class PortfolioServiceImpl implements PortfolioService {
     private final StockService stockService;
+    private final CoinService coinService;
     private final PortfolioRepository portfolioRepository;
     private final PortfolioDetailRepository portfolioDetailRepository;
 
@@ -58,19 +64,31 @@ public class PortfolioServiceImpl implements PortfolioService {
     public PortfolioDto getLatestPrice(PortfolioDto dto) throws JsonProcessingException {
         String asstSeCd = dto.getAsstSeCd();
         String ticker = dto.getTicker();
+        Double qty = dto.getQty();
+        double pcsPce = new BigDecimal(dto.getAvgPcsPce() * qty).doubleValue(); //매수평균가 * 수량 = 매수금액
         switch (asstSeCd) {
             case ASSET_STOCK:
-                stockService.saveStock(stockService.getStockInfoFromKis(ticker));
-                stockService.saveStock(stockService.getStockPriceFromKis(ticker));
+                StockDto stockDto = stockService.getStockInfoFromKis(ticker);
+                StockPriceDto stockPriceDto = stockService.getStockPriceFromKis(ticker);
+                stockService.saveStock(stockDto);
+                stockService.saveStock(stockPriceDto);
+                double mktPce = new BigDecimal(stockPriceDto.getStkPrpr() * qty).doubleValue();//주식현재가 * 수량 = 평가금액
+                dto.setMktPce(mktPce);
+                dto.setMktPnl(mktPce - pcsPce);
                 break;
             case ASSET_COIN:
+                CoinDto coinDto = coinService.getCoin(ticker);
+                mktPce = new BigDecimal(coinDto.getPrpr() * qty).doubleValue();//코인현재가 * 수량 = 평가금액
+                dto.setMktPce(mktPce);
+                dto.setMktPnl(mktPce - pcsPce);
                 break;
             case ASSET_USD:
             case ASSET_KRW:
-                //do nothing
+                dto.setMktPce(pcsPce);
+                dto.setMktPnl(0d);
                 break;
         }
-        return new PortfolioDto();
+        return dto;
     }
 
     @Override
@@ -79,7 +97,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = new Portfolio();
         portfolio.setId(portfolioId);
         portfolioRepository.save(portfolio);
-        if(!StringUtils.isEmpty(portfolioDto.getTicker())) this.insertPortfolioDetails(portfolioDto);
+        if (!StringUtils.isEmpty(portfolioDto.getTicker())) this.insertPortfolioDetails(portfolioDto);
     }
 
     @Override

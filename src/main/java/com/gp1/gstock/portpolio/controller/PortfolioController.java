@@ -1,5 +1,6 @@
 package com.gp1.gstock.portpolio.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.coin.dto.CoinDto;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
 import com.gp1.gstock.portpolio.service.PortfolioService;
@@ -38,10 +39,10 @@ public class PortfolioController {
                     }
             ) @RequestParam(name = "asstSeCd", required = false) String asstSeCd,
             @Parameter(name = "qty", description = "보유수량") @RequestParam(name = "qty", required = false) Double qty,
-            @Parameter(name = "avgPcsPce", description = "매수평균가") @RequestParam(name = "avgPcsPce", required = false) Double avgPcsPce) {
+            @Parameter(name = "avgPcsPce", description = "매수평균가") @RequestParam(name = "avgPcsPce", required = false) Double avgPcsPce) throws JsonProcessingException {
         PortfolioDto dto = new PortfolioDto(userId,portfolioId,asstSeCd,ticker,qty,avgPcsPce);
         service.insertPortfolio(dto);
-        //주식 현재가격 조회 후 평가손익 산정
+        dto = service.getLatestPrice(dto);
         return ResponseEntity.ok(dto);
     }
 

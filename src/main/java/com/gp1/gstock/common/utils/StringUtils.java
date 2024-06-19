@@ -11,5 +11,5 @@ public class StringUtils {
     public static boolean isDigit(String str){
         return str.chars().allMatch(Character::isDigit);
     }
-    public static boolean isEmpty(String str) { return !Objects.nonNull(str)||!"".equals(str);}
+    public static boolean isEmpty(String str) { return str == null || str.isEmpty();}
 }
