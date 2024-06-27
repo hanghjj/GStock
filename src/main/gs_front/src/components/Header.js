@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 
 const HeaderBlock = styled.div`
+  width: 100%;
   #header {
     @include position-fixed; // 위치 고정
   }
