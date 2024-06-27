@@ -93,7 +93,7 @@ const Link = styled.a`
 // React Component
 const Login = () => {
   const onClickLogin = () => {
-    axios.post(`/user/signin`);
+    axios.post(`/api/comm/user/signin`);
   };
 
   return (
