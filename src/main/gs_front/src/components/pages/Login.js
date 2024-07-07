@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import stockImage from "../../assets/img/recession-banking-statistics-bad-street.jpg"; // 여기에 주식 이미지 경로를 넣으세요
 import axios from "axios";
@@ -92,9 +92,32 @@ const Link = styled.a`
 
 // React Component
 const Login = () => {
+  const [id, setId] = useState();
+  const [pw, setPw] = useState();
+
+
   const onClickLogin = () => {
-    axios.post(`/api/comm/user/signin`);
-  };
+    axios.post(`/api/comm/user/signin`,{
+      id:id,
+      password:pw
+    }) 
+    .then((response) => {
+      console.log(response.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const onIdChange = (e)=>{
+    e.preventDefault();
+    setId(e.target.value);
+  }
+
+  const onPwChange = (e)=>{
+    e.preventDefault();
+    setPw(e.target.value);
+  }
 
   return (
     <PageContainer>
@@ -104,10 +127,10 @@ const Login = () => {
           <Title>Login</Title>
           <form>
             <LoginInput>
-              <Input type="email" placeholder="Email" required />
+              <Input type="text" id="id" placeholder="Id" value={id} required onChange={onIdChange} />
             </LoginInput>
             <LoginInput>
-              <Input type="password" placeholder="Password" required />
+              <Input type="password" id="pw" placeholder="Password" value={pw} required onChange={onPwChange} />
             </LoginInput>
             <Button onClick={onClickLogin}>Login</Button>
           </form>

@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/comm")
 @AllArgsConstructor
+@CrossOrigin
 @Tag(name = "Common", description = "공통 기능 관련 API")
 public class CommonController {
     private final CommonService commonService;
@@ -77,7 +78,6 @@ public class CommonController {
         if(!signedUser.isVerified()){
             throw new CustomException("common.login.fail");
         }
-        //MVC controller로 옮길 예정
         return ResponseEntity.status(HttpStatus.OK).body(signedUser);
     }
 }

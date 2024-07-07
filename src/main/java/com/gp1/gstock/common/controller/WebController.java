@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController implements ErrorController {
     //ContextPath에 gstock 추가할 것
-    @GetMapping({"/", "/login", "/myPage","/intro","/indexInfo","/stockInfo","/dividendInfo","/portfolio","/dividendSchedule"})
+    @GetMapping({"/","/error"})
     public String index() {
         return "index.html";
     }
