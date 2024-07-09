@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class PortfolioDetail extends BaseEntity {
     @EmbeddedId
-    private PortfolioDetailId portfolioDetailId;
+    private PortfolioDetailId id;
 
     @Schema(name = "자산구분코드", allowableValues = {"C", "S", "U", "K"})
     @Column(name = "ASST_SE_CD")

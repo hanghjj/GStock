@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.coin.dto.CoinDto;
 import com.gp1.gstock.coin.service.CoinService;
 import com.gp1.gstock.common.Exception.CustomException;
-import com.gp1.gstock.common.utils.DateTimeUtils;
 import com.gp1.gstock.common.utils.StringUtils;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
 import com.gp1.gstock.portpolio.entity.Portfolio;
@@ -20,10 +19,12 @@ import com.gp1.gstock.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.gp1.gstock.common.constants.BizConstants.*;
@@ -38,17 +39,21 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PortfolioDetailRepository portfolioDetailRepository;
 
     @Override
-    public List<Portfolio> getPortfolioList(String userId) {
+    public List<PortfolioDto> getPortfolioList(String userId) {
         // get portfolioId per user
-        return null;
+        List<Portfolio> entityList = portfolioRepository.findByIdUserId(userId);
+        if(entityList.size()==0) return Collections.emptyList();
+        return entityList.stream()
+                .map(this::convertPortfolioToDto)
+                .toList();
     }
 
     @Override
-    public List<PortfolioDto> getPortfolioDetailList(String userId, String portfolioId) {
+    public List<PortfolioDto> getPortfolioDetailList(String portfolioId) {
         // getPortFolioDetailList
-        List<PortfolioDto> resultList = new ArrayList<>();
-        //resultList = DAO ~~
-        // update All asset prices
+        List<PortfolioDetail> entityList = portfolioDetailRepository.findByIdPortfolioId(portfolioId);
+        if (entityList.size() == 0) return Collections.emptyList();
+        List<PortfolioDto> resultList = entityList.stream().map(this::convertPortfolioToDto).toList();
         for (PortfolioDto dto : resultList) {
             try {
                 dto = this.getLatestPrice(dto);
@@ -104,7 +109,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     public void insertPortfolioDetails(PortfolioDto dto) {
         PortfolioDetailId portfolioDetailId = new PortfolioDetailId(dto.getPortfolioId(), dto.getTicker());
         PortfolioDetail detail = new PortfolioDetail();
-        detail.setPortfolioDetailId(portfolioDetailId);
+        detail.setId(portfolioDetailId);
         BeanUtils.copyProperties(dto, detail);
         portfolioDetailRepository.save(detail);
     }
@@ -112,5 +117,23 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public void deletePortfolio(String userId, String PortfolioId) {
 
+    }
+
+    @Override
+    public PortfolioDto convertPortfolioToDto(Portfolio portfolio) {
+        PortfolioDto portfolioDto = new PortfolioDto();
+        BeanUtils.copyProperties(portfolio, portfolioDto);
+        portfolioDto.setUserId(portfolio.getId().getUserId());
+        portfolioDto.setPortfolioId(portfolio.getId().getPortfolioId());
+        return portfolioDto;
+    }
+
+    @Override
+    public PortfolioDto convertPortfolioToDto(PortfolioDetail portfolioDetail) {
+        PortfolioDto portfolioDto = new PortfolioDto();
+        BeanUtils.copyProperties(portfolioDetail, portfolioDto);
+        portfolioDto.setPortfolioId(portfolioDetail.getId().getPortfolioId());
+        portfolioDto.setTicker(portfolioDetail.getId().getTicker());
+        return portfolioDto;
     }
 }
