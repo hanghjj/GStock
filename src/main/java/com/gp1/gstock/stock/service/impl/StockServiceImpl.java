@@ -11,14 +11,18 @@ import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.entity.StockPrice;
 import com.gp1.gstock.stock.kis.KisService;
 import com.gp1.gstock.stock.service.StockService;
+import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.gp1.gstock.common.constants.BizConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,12 +60,19 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockDto getStockInfoFromKis(String srtnCd) throws JsonProcessingException, CustomException {
-        String stockInfoJson = kisService.getStockInfo(srtnCd);
+        String marketCode = null;
+        String stockInfoJson = kisService.getStockInfo(srtnCd, marketCode);
         JSONObject output1 = null;
         try {
             output1 = new JSONObject(stockInfoJson).getJSONObject("output");
         } catch (JSONException e) {
-            throw new CustomException("stock.search.fail");
+            marketCode = AMEX;
+            stockInfoJson = kisService.getStockInfo(srtnCd, marketCode);
+            try {
+                output1 = new JSONObject(stockInfoJson).getJSONObject("output");
+            } catch (JSONException e2) {
+                throw new CustomException("stock.search.fail");
+            }
         }
         //convert Json to StockDto
         StockDto stockDto = objectMappingService.ConvertCTPF1604RToStockDto(output1.toString());
@@ -69,13 +80,20 @@ public class StockServiceImpl implements StockService {
         if (Optional.ofNullable(stockDto.getItmNm()).orElse("").length() < 1) {
             throw new CustomException("stock.search.fail");
         }
+        if(StringUtils.equals(marketCode,AMEX)){ //AMEX 거래소 주식일경우
+            stockDto.setExcd(AME);
+        }else if (StringUtils.equals(stockDto.getDomeForeSeCd(),FORE)){
+            stockDto.setExcd(NAS);
+        }else stockDto.setExcd(KOR);
         return stockDto;
     }
 
     @Override
-    public StockPriceDto getStockPriceFromKis(String srtnCd) throws JsonProcessingException {
+    public StockPriceDto getStockPriceFromKis(StockDto stockDto) throws JsonProcessingException {
+        String srtnCd = stockDto.getSrtnCd();
+        String excd = stockDto.getExcd();
         boolean isDomestic = StringUtils.isDigit(srtnCd);
-        String stockPriceJson = kisService.getStockPrice(srtnCd);
+        String stockPriceJson = kisService.getStockPrice(srtnCd, excd);
         JSONObject output2 = null;
         try {
             output2 = new JSONObject(stockPriceJson).getJSONObject("output");
@@ -83,10 +101,10 @@ public class StockServiceImpl implements StockService {
             throw new CustomException("stock.search.fail");
         }
         //convert Json to StockPriceDto
-        StockPriceDto stockPriceDto = isDomestic?
-                objectMappingService.ConvertFHKST01010100ToStockPriceDto(output2.toString(), srtnCd):
+        StockPriceDto stockPriceDto = isDomestic ?
+                objectMappingService.ConvertFHKST01010100ToStockPriceDto(output2.toString(), srtnCd) :
                 objectMappingService.ConvertHHDFS00000300ToStockPriceDto(output2.toString(), srtnCd);
-        if(stockPriceDto.getStkPrpr()==0){
+        if (stockPriceDto.getStkPrpr() == 0) {
             throw new CustomException("stock.unavailable.error", List.of(stockPriceDto.getSrtnCd()));
         }
         return stockPriceDto;

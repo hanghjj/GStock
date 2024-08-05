@@ -12,6 +12,7 @@ public class StockDto extends BaseEntity {
     private String srtnCd;
     private String itmNm;
     private String domeForeSeCd;
+    private String excd;
     private String bseDt;
     private Double stkPrpr;
     private Double prdyVrss;

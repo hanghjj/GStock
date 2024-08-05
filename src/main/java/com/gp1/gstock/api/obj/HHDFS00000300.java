@@ -23,8 +23,9 @@ public class HHDFS00000300 {
 
     public KisStockPrice convert(){
         KisStockPrice a = new KisStockPrice();
-        a.setStckShrnIscd(this.rsym.replaceAll("DNAS",""));
-        a.setRprsMrktKorName("미국 나스닥");
+        String DMarket = this.getRsym().substring(0,4);
+        a.setStckShrnIscd(this.rsym.replaceAll(DMarket,""));
+        a.setRprsMrktKorName("미국 " + (DMarket.substring(1).equals("NAS")?"나스닥":"아멕스"));
         a.setStckPrpr(Double.parseDouble(this.last));
         a.setPrdyVrss(Double.parseDouble(this.diff));
         a.setPrdyVrssSign(StockUtils.getVrssSign(this.sign));

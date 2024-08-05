@@ -89,7 +89,7 @@ public class StockController {
     @Tag(name = "Stock")
     public ResponseEntity<StockDto> getKisStockInfo(@Parameter(name = "srtnCd", description = "종목코드") @PathVariable("srtnCd") String srtnCd) throws JsonProcessingException {
         StockDto stockDto = stockService.getStockInfoFromKis(srtnCd);
-        StockPriceDto stockPriceDto = stockService.getStockPriceFromKis(srtnCd);
+        StockPriceDto stockPriceDto = stockService.getStockPriceFromKis(stockDto);
         stockService.saveStock(stockDto);
         stockService.saveStock(stockPriceDto);
         BeanUtils.copyProperties(stockPriceDto,stockDto);

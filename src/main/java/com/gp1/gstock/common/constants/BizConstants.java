@@ -11,4 +11,15 @@ public class BizConstants {
     public static final String ASSET_COIN = "C";
     public static final String ASSET_USD = "U";
     public static final String ASSET_KRW = "K";
+
+
+
+    public static final String DOMESTIC = "300";
+    public static final String NASDAQ = "512";
+    public static final String NAS = "NAS";
+    public static final String AMEX= "529";
+    public static final String AME = "AMS";
+    public static final String KOR = "KOR";
+    public static final String FORE = "F";
+    public static final String DOME = "D";
 }

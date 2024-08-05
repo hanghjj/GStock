@@ -74,7 +74,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         switch (asstSeCd) {
             case ASSET_STOCK:
                 StockDto stockDto = stockService.getStockInfoFromKis(ticker);
-                StockPriceDto stockPriceDto = stockService.getStockPriceFromKis(ticker);
+                StockPriceDto stockPriceDto = stockService.getStockPriceFromKis(stockDto);
                 stockService.saveStock(stockDto);
                 stockService.saveStock(stockPriceDto);
                 double mktPce = new BigDecimal(stockPriceDto.getStkPrpr() * qty).doubleValue();//주식현재가 * 수량 = 평가금액
