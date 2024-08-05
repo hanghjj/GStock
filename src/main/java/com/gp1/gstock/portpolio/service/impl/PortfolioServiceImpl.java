@@ -19,11 +19,9 @@ import com.gp1.gstock.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,8 +113,14 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public void deletePortfolio(String userId, String PortfolioId) {
+    public void deletePortfolio(String userId, String portfolioId) {
+        portfolioRepository.deleteById(new PortfolioId(userId,portfolioId));
+    }
 
+    @Override
+    public void deletePortfolioDetails(String userId, String portfolioId, String ticker) {
+        //session 로그인 이후 JWT 토큰에 id와 parameter의 id가 다르면 return
+        portfolioDetailRepository.deleteById(new PortfolioDetailId(portfolioId,ticker));
     }
 
     @Override

@@ -35,4 +35,15 @@ public class PortfolioDto extends BaseEntity {
         this.qty = qty;
         this.avgPcsPce = avgPcsPce;
     }
+
+    public PortfolioDto(String userId, String portfolioId){
+        this.userId = userId;
+        this.portfolioId = portfolioId;
+    }
+
+    public PortfolioDto(String userId, String portfolioId, String ticker){
+        this.userId = userId;
+        this.portfolioId = portfolioId;
+        this.ticker = ticker;
+    }
 }

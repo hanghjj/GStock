@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -76,4 +75,26 @@ public class PortfolioController {
         return ResponseEntity.ok(service.getPortfolioList(userId));
     }
 
+    @GetMapping("/delete/portfolio")
+    @Operation(summary = "포트폴리오 목록 삭제", description = "포트폴리오 목록 삭제")
+    @Tag(name = "Portfolio")
+    public ResponseEntity<PortfolioDto> deletePortfolio(
+            @Parameter(name = "userId", description = "사용자ID") @RequestParam(name = "userId", required = true) String userId,
+            @Parameter(name = "portfolioId", description = "포트폴리오ID") @RequestParam(name = "portfolioId", required = true) String portfolioId
+    ){
+        service.deletePortfolio(userId,portfolioId);
+        return ResponseEntity.ok(new PortfolioDto(userId,portfolioId));
+    }
+
+    @GetMapping("/delete/details")
+    @Operation(summary = "포트폴리오 세부 항목 삭제", description = "포트폴리오 세부 항목 삭제")
+    @Tag(name = "Portfolio")
+    public ResponseEntity<PortfolioDto> deletePortfolio(
+            @Parameter(name = "userId", description = "사용자ID") @RequestParam(name = "userId", required = true) String userId,
+            @Parameter(name = "portfolioId", description = "포트폴리오ID") @RequestParam(name = "portfolioId", required = true) String portfolioId,
+            @Parameter(name = "ticker", description = "티커") @RequestParam(name = "ticker", required = true) String ticker
+    ){
+        service.deletePortfolioDetails(userId,portfolioId,ticker);
+        return ResponseEntity.ok(new PortfolioDto(userId,portfolioId,ticker));
+    }
 }

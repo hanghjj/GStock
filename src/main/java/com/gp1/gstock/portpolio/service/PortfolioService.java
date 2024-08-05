@@ -13,7 +13,8 @@ public interface PortfolioService {
     PortfolioDto getLatestPrice(PortfolioDto dto) throws JsonProcessingException;
     void insertPortfolio(PortfolioDto portfolioDto);
     void insertPortfolioDetails(PortfolioDto portfolioDto);
-    void deletePortfolio(String userId, String PortfolioId);
+    void deletePortfolio(String userId, String portfolioId);
+    void deletePortfolioDetails(String userId, String portfolioId, String ticker);
     PortfolioDto convertPortfolioToDto(Portfolio portfolio);
     PortfolioDto convertPortfolioToDto(PortfolioDetail portfolioDetail);
 }
