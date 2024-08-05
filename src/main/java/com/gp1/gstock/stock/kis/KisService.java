@@ -32,9 +32,9 @@ public class KisService {
         return apiAction.get(url, OVERSEAS_STOCK_PRICE_KEY);
     }
     public String getStockInfo(String id, @Nullable String marketCode) {
-        String productTypeCode = "";
-        if(StringUtils.isDigit(id)) productTypeCode = StringUtils.isDigit(id) ? DOMESTIC : null;          //숫자로만 이루어져 있으면 국내 상장 주식, 아니면 해외주식
-        productTypeCode = Optional.ofNullable(marketCode).orElse(NASDAQ); //시장코드가 들어가 있으면 해당 데이터로, 아니면 나스닥 고정
+        String productTypeCode;
+        if(StringUtils.isDigit(id)) productTypeCode = DOMESTIC;         //숫자로만 이루어져 있으면 국내 상장 주식, 아니면 해외주식
+        else productTypeCode = Optional.ofNullable(marketCode).orElse(NASDAQ); //시장코드가 들어가 있으면 해당 데이터로, 아니면 나스닥 고정
         String url = KisConstants.REST_BASE_URL + TOTAL_STOCK_INFO_URL + "?" + STOCK_INFO_PRODUCT_NO + id + "&" + STOCK_INFO_PRODUCT_TYPE_CODE + productTypeCode;
         JSONObject result = apiAction.get(url, KisConstants.TOTAL_STOCK_INFO_KEY);
         return result.toString();
