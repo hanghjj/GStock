@@ -19,11 +19,13 @@ import com.gp1.gstock.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.gp1.gstock.common.constants.BizConstants.*;
 
@@ -40,7 +42,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     public List<PortfolioDto> getPortfolioList(String userId) {
         // get portfolioId per user
         List<Portfolio> entityList = portfolioRepository.findByIdUserId(userId);
-        if(entityList.size()==0) return Collections.emptyList();
+        if (entityList.size() == 0) return Collections.emptyList();
         return entityList.stream()
                 .map(this::convertPortfolioToDto)
                 .toList();
@@ -114,13 +116,13 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public void deletePortfolio(String userId, String portfolioId) {
-        portfolioRepository.deleteById(new PortfolioId(userId,portfolioId));
+        portfolioRepository.deleteById(new PortfolioId(userId, portfolioId));
     }
 
     @Override
     public void deletePortfolioDetails(String userId, String portfolioId, String ticker) {
         //session 로그인 이후 JWT 토큰에 id와 parameter의 id가 다르면 return
-        portfolioDetailRepository.deleteById(new PortfolioDetailId(portfolioId,ticker));
+        portfolioDetailRepository.deleteById(new PortfolioDetailId(portfolioId, ticker));
     }
 
     @Override
@@ -138,6 +140,23 @@ public class PortfolioServiceImpl implements PortfolioService {
         BeanUtils.copyProperties(portfolioDetail, portfolioDto);
         portfolioDto.setPortfolioId(portfolioDetail.getId().getPortfolioId());
         portfolioDto.setTicker(portfolioDetail.getId().getTicker());
+        return portfolioDto;
+    }
+
+    @Override
+    public PortfolioDto scaleTradingSimulation(PortfolioDto portfolioDto, Double addQty, @Nullable Double pcsPce) throws JsonProcessingException {
+        StockDto priceDto = StockDto.builder().build();
+        priceDto.setSrtnCd(portfolioDto.getTicker());
+        pcsPce = Optional.ofNullable(pcsPce).orElse(stockService.getStockPriceFromKis(priceDto).getStkPrpr());
+        //매수가가 비어있을 경우 현재 가격으로 설정
+
+        double qty = portfolioDto.getQty();
+        double avgPcsPce = portfolioDto.getAvgPcsPce();
+        double resultQty = new BigDecimal(qty).add(new BigDecimal(addQty)).doubleValue();
+        double resultPce = (qty * avgPcsPce + addQty * pcsPce)/resultQty;
+        if(StringUtils.isDigit(portfolioDto.getTicker())) resultPce = Math.round(resultPce);
+        portfolioDto.setQty(resultQty);
+        portfolioDto.setAvgPcsPce(resultPce);
         return portfolioDto;
     }
 }

@@ -3,6 +3,7 @@ package com.gp1.gstock.portpolio.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.common.utils.DateTimeUtils;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
+import com.gp1.gstock.portpolio.entity.Portfolio;
 import com.gp1.gstock.portpolio.service.PortfolioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -96,5 +97,19 @@ public class PortfolioController {
     ){
         service.deletePortfolioDetails(userId,portfolioId,ticker);
         return ResponseEntity.ok(new PortfolioDto(userId,portfolioId,ticker));
+    }
+
+    @GetMapping("/simul/scale")
+    @Operation(summary = "물타기 계산기", description = "물타기 게산기")
+    @Tag(name = "Portfolio")
+    public ResponseEntity<PortfolioDto> getScaleTradingSimulation(
+            @Parameter(name = "ticker", description = "티커") @RequestParam(name = "ticker", required = true) String ticker,
+            @Parameter(name = "qty", description = "보유수량") @RequestParam(name = "qty", required = true) Double qty,
+            @Parameter(name = "avgPcsPce", description = "매수평균가") @RequestParam(name = "avgPcsPce", required = true) Double avgPcsPce,
+            @Parameter(name = "addQty", description = "추가수량") @RequestParam(name = "addQty", required = true) Double addQty,
+            @Parameter(name = "pcsPce", description = "매수가") @RequestParam(name = "pcsPce", required = false) Double pcsPce
+    ) throws JsonProcessingException {
+        PortfolioDto input = new PortfolioDto(ticker,qty,avgPcsPce);
+        return ResponseEntity.ok(service.scaleTradingSimulation(input,addQty,pcsPce));
     }
 }

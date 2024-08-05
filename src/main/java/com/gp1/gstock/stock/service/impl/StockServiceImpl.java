@@ -90,6 +90,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockPriceDto getStockPriceFromKis(StockDto stockDto) throws JsonProcessingException {
+        //excd가 없을 때 amex 거래소데이터 조회 기능 추가할 것
         String srtnCd = stockDto.getSrtnCd();
         String excd = stockDto.getExcd();
         boolean isDomestic = StringUtils.isDigit(srtnCd);

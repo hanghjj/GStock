@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
 import com.gp1.gstock.portpolio.entity.Portfolio;
 import com.gp1.gstock.portpolio.entity.PortfolioDetail;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface PortfolioService {
     void deletePortfolioDetails(String userId, String portfolioId, String ticker);
     PortfolioDto convertPortfolioToDto(Portfolio portfolio);
     PortfolioDto convertPortfolioToDto(PortfolioDetail portfolioDetail);
+    PortfolioDto scaleTradingSimulation(PortfolioDto portfolioDto, Double addQty, @Nullable Double pcsPce) throws JsonProcessingException;
 }
