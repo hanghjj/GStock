@@ -76,21 +76,20 @@ public class StockServiceImpl implements StockService {
         }
         //convert Json to StockDto
         StockDto stockDto = objectMappingService.ConvertCTPF1604RToStockDto(output1.toString());
-        log.info("주식 정보 조회 " + output1.toString());
+        log.info(stockDto.getItmNm() + "(" + srtnCd + ")" + " 주식 정보 (한국투자증권 조회) 결과 JSON : " + output1.toString());
         if (Optional.ofNullable(stockDto.getItmNm()).orElse("").length() < 1) {
             throw new CustomException("stock.search.fail");
         }
-        if(StringUtils.equals(marketCode,AMEX)){ //AMEX 거래소 주식일경우
+        if (StringUtils.equals(marketCode, AMEX)) { //AMEX 거래소 주식일경우
             stockDto.setExcd(AME);
-        }else if (StringUtils.equals(stockDto.getDomeForeSeCd(),FORE)){
+        } else if (StringUtils.equals(stockDto.getDomeForeSeCd(), FORE)) {
             stockDto.setExcd(NAS);
-        }else stockDto.setExcd(KOR);
+        } else stockDto.setExcd(KOR);
         return stockDto;
     }
 
     @Override
     public StockPriceDto getStockPriceFromKis(StockDto stockDto) throws JsonProcessingException {
-        //excd가 없을 때 amex 거래소데이터 조회 기능 추가할 것
         String srtnCd = stockDto.getSrtnCd();
         String excd = stockDto.getExcd();
         boolean isDomestic = StringUtils.isDigit(srtnCd);
@@ -108,6 +107,8 @@ public class StockServiceImpl implements StockService {
         if (stockPriceDto.getStkPrpr() == 0) {
             throw new CustomException("stock.unavailable.error", List.of(stockPriceDto.getSrtnCd()));
         }
+        log.info(stockDto.getItmNm() + "(" + srtnCd + ")" + " 주식 가격 (한국투자증권 조회) 결과 JSON : " + output2.toString());
+        log.info(stockDto.getItmNm() + "(" + srtnCd + ")" + " 주식 가격 (한국투자증권 조회) : " + stockPriceDto.getStkPrpr());
         return stockPriceDto;
     }
 }

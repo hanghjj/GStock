@@ -21,13 +21,13 @@ public class StockDAOImpl implements StockDAO {
     private final StockPriceRepository stockPriceRepository;
     @Override
     public void insertStock(Stock stock){
-        log.info("Insert Stock : \n" + stock.toString());
+        log.info("Insert Stock : " + stock.toString());
         stockRepository.save(stock);
     }
     @Override
     @Transactional
     public void insertStockPrice(StockPrice stockPrice){
-        log.info("Insert Stock price: \n" + stockPrice.toString());
+        log.info("Insert Stock price: " + stockPrice.toString());
         stockPriceRepository.save(stockPrice);
     }
     @Override

@@ -47,6 +47,8 @@ public class CoinServiceImpl implements CoinService {
         } catch (JSONException | JsonProcessingException e) {
             throw new CustomException("coin.search.fail");
         }
+
+        log.info(resultDto.getTicker() + " 현재가 조회(CoinOne Public Api) 결과 : " + resultDto.getPrpr());
         return resultDto;
     }
 

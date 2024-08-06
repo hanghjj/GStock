@@ -16,6 +16,7 @@ public class BizConstants {
 
     public static final String DOMESTIC = "300";
     public static final String NASDAQ = "512";
+    public static final String NEWYORK = "513";
     public static final String NAS = "NAS";
     public static final String AMEX= "529";
     public static final String AME = "AMS";

@@ -146,8 +146,15 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public PortfolioDto scaleTradingSimulation(PortfolioDto portfolioDto, Double addQty, @Nullable Double pcsPce) throws JsonProcessingException {
         StockDto priceDto = StockDto.builder().build();
-        priceDto.setSrtnCd(portfolioDto.getTicker());
-        pcsPce = Optional.ofNullable(pcsPce).orElse(stockService.getStockPriceFromKis(priceDto).getStkPrpr());
+        String ticker = portfolioDto.getTicker();
+        priceDto.setSrtnCd(ticker);
+
+
+        pcsPce = Optional.ofNullable(pcsPce)
+                .orElse(stockService.getStockPriceFromKis(StockDto.builder()
+                                    .srtnCd(ticker)
+                                    .excd(stockService.getStockInfoFromKis(ticker).getExcd())
+                                    .build()).getStkPrpr());
         //매수가가 비어있을 경우 현재 가격으로 설정
 
         double qty = portfolioDto.getQty();
