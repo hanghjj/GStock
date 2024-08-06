@@ -17,16 +17,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DividendId extends BaseEntity {
-    @Schema(name = "사용자ID")
-    @Column(name = "USER_ID")
-    private String userId;
 
-    @Schema(name = "기준년월")
-    @Column(name = "BSE_YM")
-    private String bseYm;
 
     @Schema(name = "종목코드")
     @Column(name = "SRTN_CD")
     private String srtnCd;
+
+    @Schema(name = "기준년월(배당락일 기준)")
+    @Column(name = "BSE_YM")
+    private String bseYm;
 
 }

@@ -21,11 +21,8 @@ public class Dividend extends BaseEntity {
 
     private Double dps;
 
-    @Column(name = "PAY_PERD")
-    private String payPerd;
-
-
-    private Dividend(String userId, String bseYm, String srtnCd){
-        this.id = new DividendId(userId,bseYm,srtnCd);
+    public Dividend(String srtnCd, String bseYm, Double dps) {
+        this.id = new DividendId(srtnCd, bseYm);
+        this.dps = dps;
     }
 }

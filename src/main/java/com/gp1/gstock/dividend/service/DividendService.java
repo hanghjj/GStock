@@ -7,8 +7,14 @@ import java.util.List;
 public interface DividendService {
 
     public void insertDiviend(Dividend dividend);
+
     public void updateDiviend(Dividend dividend);
-    public Dividend selectDividend(String userId, String bseYm, String srtnCd);
+
+    public Dividend selectDividend(String srtnCd, String bseYm);
+
     public List<Dividend> selectBySrtnCd(String srtnCd);
+
     public void deleteDividend(Dividend dividend);
+
+    public List<Dividend> searchDividendPayHistory(String srtnCd);
 }
