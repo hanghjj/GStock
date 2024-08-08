@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ag-grid-community/react": "^32.0.2",
+    "@ag-grid-community/styles": "^32.0.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ag-grid-community": "^32.0.2",
+    "ag-grid-react": "^32.0.2",
     "axios": "^1.6.8",
     "http-proxy-middleware": "^2.0.6",
     "react": "^18.2.0",
