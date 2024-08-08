@@ -9,7 +9,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Intro from "../components/Intro";
 import IndexInfo from "../components/pages/IndexInfo";
-import StockInfo from "../components/pages/StockInfo";
+import StockInfo from "../components/pages/StockInfo/index";
 import DividendInfo from "../components/pages/DividendInfo";
 import Portfolio from "../components/pages/Portfolio";
 import DividendSchedule from "../components/pages/DividendSchedule";
