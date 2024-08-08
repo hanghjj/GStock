@@ -96,7 +96,8 @@ const Login = () => {
   const [pw, setPw] = useState();
 
 
-  const onClickLogin = () => {
+  const onClickLogin = (event) => {
+    event.preventDefault();
     axios.post(`/api/comm/user/signin`,{
       id:id,
       password:pw
