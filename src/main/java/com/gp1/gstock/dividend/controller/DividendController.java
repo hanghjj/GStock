@@ -5,7 +5,6 @@ import com.gp1.gstock.common.service.CommonService;
 import com.gp1.gstock.dividend.entity.Dividend;
 import com.gp1.gstock.dividend.entity.DividendId;
 import com.gp1.gstock.dividend.service.DividendService;
-import com.gp1.gstock.dividend.utils.DividendUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

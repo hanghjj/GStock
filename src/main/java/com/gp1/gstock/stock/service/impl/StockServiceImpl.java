@@ -11,12 +11,10 @@ import com.gp1.gstock.stock.entity.Stock;
 import com.gp1.gstock.stock.entity.StockPrice;
 import com.gp1.gstock.stock.kis.KisService;
 import com.gp1.gstock.stock.service.StockService;
-import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
