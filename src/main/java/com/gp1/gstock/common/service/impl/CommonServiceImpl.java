@@ -50,6 +50,7 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public void insertUser(User user) throws CustomException {
+        if(user.getUserSeCd().length()!=1) user.setUserSeCd(null);
         try {
             String initialPw = user.getPassword();
             String encodedPw = encoder.encode(initialPw);
