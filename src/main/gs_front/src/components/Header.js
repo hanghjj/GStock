@@ -5,7 +5,11 @@ import styled from "styled-components";
 const HeaderBlock = styled.div`
   width: 100%;
   #header {
-    @include position-fixed; // 위치 고정
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
   }
 `;
 
