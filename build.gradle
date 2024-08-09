@@ -37,6 +37,11 @@ repositories {
 	mavenCentral()
 }
 
+
+jar {
+	enabled = false
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:3.2.3'
