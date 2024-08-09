@@ -17,7 +17,6 @@ const ResultContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: aqua;
 `;
 
 const StockInfo = () => {
@@ -45,13 +44,11 @@ const StockInfo = () => {
    * 그리드 클릭
    */
   const onCellClicked = (params) => {
-    console.log("클릭", params.data.cd);
-
     axios
       .get(`/api/stock/kis/info/${params.data.cd}`)
       .then((response) => {
-        console.log(response.data);
         setInfoList(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
