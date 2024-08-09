@@ -26,4 +26,7 @@ public class BizConstants {
 
     public static final String YAHOO_DIVIDEND_PREFIX = "https://finance.yahoo.com/quote/";
     public static final String YAHOO_DIVIDEND_SUFFIX = "/history/?period1=969235200&period2=1722902400&interval=capitalGain%7Cdiv%7Csplit&filter=div&frequency=1mo&includeAdjustedClose=true";
+
+    public static final String USER_ADMIN = "A";
+    public static final String USER_NORMAL = "N";
 }

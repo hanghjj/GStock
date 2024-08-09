@@ -3,7 +3,6 @@ package com.gp1.gstock.portpolio.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gp1.gstock.common.utils.DateTimeUtils;
 import com.gp1.gstock.portpolio.dto.PortfolioDto;
-import com.gp1.gstock.portpolio.entity.Portfolio;
 import com.gp1.gstock.portpolio.service.PortfolioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
