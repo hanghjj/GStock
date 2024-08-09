@@ -4,7 +4,8 @@ import styled from "styled-components";
 // Styled Components
 const MainContainer = styled.main`
   width: 100%;
-  height: 100%;
+  height: auto;
+  padding-top: 68px;
 `;
 
 const Main = ({ children }) => {

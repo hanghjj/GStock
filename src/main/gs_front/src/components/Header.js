@@ -5,6 +5,7 @@ import styled from "styled-components";
 const HeaderBlock = styled.div`
   width: 100%;
   #header {
+    height: 68px;
     position: fixed;
     top: 0;
     left: 0;
