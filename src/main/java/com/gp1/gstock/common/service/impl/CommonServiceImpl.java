@@ -8,6 +8,9 @@ import com.gp1.gstock.common.entity.User;
 import com.gp1.gstock.common.repository.MsgCdRepository;
 import com.gp1.gstock.common.service.CommonService;
 import lombok.AllArgsConstructor;
+import oracle.jdbc.OracleData;
+import oracle.jdbc.OracleDatabaseException;
+import org.hibernate.HibernateException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,8 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+
+import static com.gp1.gstock.common.constants.BizConstants.USER_NORMAL;
 
 
 @Service
@@ -45,10 +50,15 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public void insertUser(User user) throws CustomException {
-        String initialPw = user.getPassword();
-        String encodedPw = encoder.encode(initialPw);
-        user.setPassword(encodedPw);
-        em.persist(user);
+        try {
+            String initialPw = user.getPassword();
+            String encodedPw = encoder.encode(initialPw);
+            user.setUserSeCd(Optional.ofNullable(user.getUserSeCd()).orElse(USER_NORMAL));
+            user.setPassword(encodedPw);
+            em.persist(user);
+        }catch (Exception e){
+            throw new CustomException("common.register.error");
+        }
     }
 
     @Override
