@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import stockImage from "../../assets/img/recession-banking-statistics-bad-street.jpg"; // 여기에 주식 이미지 경로를 넣으세요
+import stockImage from "../../assets/img/recession-banking-statistics-bad-street.jpg";
 import axios from "axios";
 
 // Styled Components
@@ -13,7 +13,7 @@ const PageContainer = styled.div`
 
 const ImageContainer = styled.div`
   flex-basis: 50%;
-  background: url(${stockImage}) no-repeat center center;
+  // background: url(${stockImage}) no-repeat center center;
   background-size: cover;
 `;
 
@@ -22,6 +22,7 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 `;
 
 const LoginBox = styled.div`
@@ -43,24 +44,41 @@ const LoginInput = styled.div`
   margin-bottom: 1rem;
 `;
 
+const TitleBox = styled.div`
+  margin-bottom: 50px;
+`;
+
 const Title = styled.h1`
-  font-size: 24px;
+  font-family: GT-Super-Display-Regular;
+  font-weight: 100;
+  font-size: 26px;
   color: #ffffff;
   margin-bottom: 20px;
+`;
+
+const SignupBox = styled.div`
+  color: #ffffff;
+`;
+
+const SignupButton = styled.button`
+  background-color: inherit;
+  color: rgb(121 113 109);
+  text-decoration: underline;
+  border: none;
+  cursor: pointer;
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 1.25rem 27px 15px 27px;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  background-color: #f8f9fa;
-  color: #333;
+  background-color: transparent;
+  color: #ffffff;
   box-sizing: border-box;
+  border: none;
 
   &:focus {
-    border-color: #007bff;
-    background-color: #ffffff;
+    outline: none;
+    cursor: default;
   }
 `;
 
@@ -68,16 +86,13 @@ const Button = styled.button`
   width: 100%;
   padding: 1.25rem 27px 15px 27px;
   box-sizing: border-box;
-  background-color: #007bff;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(13 13 13);
   border: none;
-  border-radius: 5px;
+  border-radius: 9999px;
   font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
-  &:hover {
-    background-color: #0056b3;
-  }
 `;
 
 const Link = styled.a`
@@ -95,45 +110,67 @@ const Login = () => {
   const [id, setId] = useState();
   const [pw, setPw] = useState();
 
-
   const onClickLogin = (event) => {
     event.preventDefault();
-    axios.post(`/api/comm/user/signin`,{
-      id:id,
-      password:pw
-    }) 
-    .then((response) => {
-      console.log(response.data)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+    axios
+      .post(`/api/comm/user/signin`, {
+        id: id,
+        password: pw,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  const onIdChange = (e)=>{
+  const onIdChange = (e) => {
     e.preventDefault();
     setId(e.target.value);
-  }
+  };
 
-  const onPwChange = (e)=>{
+  const onPwChange = (e) => {
     e.preventDefault();
     setPw(e.target.value);
-  }
+  };
 
   return (
     <PageContainer>
       <ImageContainer />
       <LoginContainer>
         <LoginBox>
-          <Title>Login</Title>
+          <TitleBox>
+            <Title>Log in</Title>
+            <SignupBox>
+              or
+              <SignupButton onClick={() => (window.location.href = "/signup")}>
+                새로운 계정 만들기
+              </SignupButton>
+            </SignupBox>
+          </TitleBox>
           <form>
             <LoginInput>
-              <Input type="text" id="id" placeholder="Id" value={id} required onChange={onIdChange} />
+              <Input
+                type="text"
+                id="id"
+                placeholder="Id"
+                value={id}
+                required
+                onChange={onIdChange}
+              />
             </LoginInput>
             <LoginInput>
-              <Input type="password" id="pw" placeholder="Password" value={pw} required onChange={onPwChange} />
+              <Input
+                type="password"
+                id="pw"
+                placeholder="Password"
+                value={pw}
+                required
+                onChange={onPwChange}
+              />
             </LoginInput>
-            <Button onClick={onClickLogin}>Login</Button>
+            <Button onClick={onClickLogin}>Enter</Button>
           </form>
           <Link href="/forgot-password">Forgot Password?</Link>
         </LoginBox>
