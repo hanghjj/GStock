@@ -3,6 +3,7 @@
  * @author yejinkim
  * @date   2024.04.02
  */
+
 /* import ----------------------------------------------------------*/
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -15,6 +16,7 @@ import Portfolio from "../components/pages/Portfolio";
 import DividendSchedule from "../components/pages/DividendSchedule";
 import MyPage from "../components/pages/MyPage";
 import Login from "../components/pages/Login";
+import Signup from "../components/pages/Signup";
 
 const CommonRouter = () => {
   return (
@@ -29,6 +31,7 @@ const CommonRouter = () => {
         <Route path="/dividendSchedule" element={<DividendSchedule />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Route>
     </Routes>
   );
