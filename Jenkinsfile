@@ -13,6 +13,13 @@ pipeline {
             }
         }
 
+        stage('Grant Execute Permission') {
+            steps {
+                // Gradle Wrapper에 실행 권한 부여
+                sh 'chmod +x ./gradlew'
+            }
+        }
+
         stage('Build with Gradle') {
             steps {
                 sh './gradlew bootJar'
