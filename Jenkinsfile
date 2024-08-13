@@ -27,13 +27,15 @@ pipeline {
 
         stage('Install npm Dependencies') {
             steps {
+                dir('src/main/gs_front')
                 // npm 의존성 설치
                 sh 'npm install'
             }
         }
-        
+
         stage('Grant Execute Permission') {
             steps {
+                dir('/')
                 // Gradle Wrapper에 실행 권한 부여
                 sh 'chmod +x ./gradlew'
             }
