@@ -17,15 +17,16 @@ pipeline {
                 git url: 'https://github.com/hanghjj/gstock', branch: 'master'
             }
         }
-        stage('Setup Node.js') {
+        stage('Get Solutions Version Informations') {
             steps {
                // Node.js와 npm이 설치되어 있음
                sh 'node --version'
                sh 'npm --version'
+               sh 'docker --version'
             }
         }
 
-        stage('Grant Execute Permission') {
+        stage('Grant Gradle Execute Permission') {
             steps {
                 // Gradle Wrapper에 실행 권한 부여
                 sh 'chmod +x ./gradlew'
