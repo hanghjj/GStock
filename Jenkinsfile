@@ -25,11 +25,13 @@ pipeline {
             }
         }
 
-         stage('Install npm Dependencies') {
+        stage('Install npm Dependencies') {
             steps {
                 // npm 의존성 설치
                 sh 'npm install'
             }
+        }
+        
         stage('Grant Execute Permission') {
             steps {
                 // Gradle Wrapper에 실행 권한 부여
