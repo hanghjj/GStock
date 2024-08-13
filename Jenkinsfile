@@ -4,6 +4,11 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'hanghjj' // 위에서 설정한 Docker Hub 인증 정보 ID
         DOKCER_IMAGE_NAME = 'gstock'
+        NODE_VERSION = '22.6.0' // Node.js 버전 이름
+    }
+
+    tools {
+            nodejs NODE_VERSION
     }
 
     stages {
@@ -12,7 +17,19 @@ pipeline {
                 git url: 'https://github.com/hanghjj/gstock', branch: 'master'
             }
         }
+        stage('Setup Node.js') {
+            steps {
+               // Node.js와 npm이 설치되어 있음
+               sh 'node --version'
+               sh 'npm --version'
+            }
+        }
 
+         stage('Install npm Dependencies') {
+            steps {
+                // npm 의존성 설치
+                sh 'npm install'
+            }
         stage('Grant Execute Permission') {
             steps {
                 // Gradle Wrapper에 실행 권한 부여
