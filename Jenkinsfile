@@ -40,7 +40,7 @@ pipeline {
         stage('Deploy Docker Container') {
             steps {
                 script {
-                    def image = docker.image(DOKCER_IMAGE_NAME':latest')
+                    def image = docker.image(DOKCER_IMAGE_NAME + ':latest')
                     image.pull()
                     image.run('-d -p 8080:8080 --name gstock_container')
                 }
