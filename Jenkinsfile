@@ -48,7 +48,7 @@ pipeline {
                     sh """
                     echo $DOCKER_PASSWORD | sudo docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                     """
-                    docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')
+                    sh "sudo docker build -t ${DOCKER_IMAGE_NAME}:latest -f Dockerfile ."
                 }
               }
             }
@@ -58,7 +58,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        docker.image(DOKCER_IMAGE_NAME+':latest').push('latest')
+                        sh "sudo docker push ${DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
