@@ -48,7 +48,7 @@ pipeline {
                     sh """
                     echo $DOCKER_PASSWORD | sudo docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                     """
-                    sh "sudo docker build -t ${DOCKER_IMAGE_NAME}:latest -f Dockerfile ."
+                    sh "sudo docker build -t $DOCKER_IMAGE_NAME:latest -f Dockerfile ."
                 }
               }
             }
