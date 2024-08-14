@@ -42,7 +42,9 @@ pipeline {
         stage('Login & Build Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+
                 script {
+                    def dockerRegistry = 'https://index.docker.io/v1/'
                     sh """
                     echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                     """
