@@ -5,6 +5,10 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'hanghjj' // 위에서 설정한 Docker Hub 인증 정보 ID
         DOKCER_IMAGE_NAME = 'hanghjj/gstock'
         NODE_VERSION = '22.6.0' // Node.js 버전 이름
+        SSH_KEY_ID = 'ORACLE_CLOUD_KEY_PRIVATE'
+        REMOTE_USER = 'ubuntu'
+        REMOTE_SERVER = '144.24.88.59'
+        SERVER_PORT = '22'
     }
 
     tools {
@@ -57,13 +61,27 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker Container') {
+        stage('Deploy Docker Container In SSH Session') {
             steps {
-                script {
-                    def image = docker.image(DOKCER_IMAGE_NAME + ':latest')
-                    image.pull()
-                    image.run('-d -p 8080:8080 --name gstock_container')
+                withCredentials([file(credentialsId: SSH_KEY_ID, variable: 'SSH_KEY_FILE'),
+                                 usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        sh '''
+                        # SSH를 통해 원격 서버에 연결하여 Docker Hub에 로그인하고 이미지 빌드 및 푸시 수행
+                        ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << 'EOF'
+                            # Docker Hub에 로그인
+                            echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+                            
+                            # Docker 이미지 Pull
+                            docker pull ${DOCKER_IMAGE_NAME}:latest .
+                            
+                            # Docker Container Run
+                            docker run -d --name gstock_container ${DOCKER_IMAGE_NAME}:latest
+                        EOF
+                        '''
+                    }
                 }
+
             }
         }
     }
