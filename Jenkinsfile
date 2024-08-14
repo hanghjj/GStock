@@ -80,7 +80,7 @@ pipeline {
                                     echo "[GSTOCK] Pulled Image From Docker Hub..."
                                     
                                     
-                                     CONTAINER_ID=\$(docker ps -q --filter "ancestor=\$DOCKER_IMAGE_NAME:latest")
+                                     CONTAINER_ID=\$(docker ps -qf  "ancestor=\$DOCKER_IMAGE_NAME:latest")
                                     if [ -n "\$CONTAINER_ID" ]; then
                                         echo "[GSTOCK] Stopping and removing existing container with ID \$CONTAINER_ID"
                                         docker stop \$CONTAINER_ID
