@@ -94,7 +94,7 @@ pipeline {
         docker run -d -p 8080:8080 --name Gstock ${DOCKER_IMAGE_NAME}:latest 
         echo "[GSTOCK] Docker container executed"  
     EOF
-""".stripIndent()
+"""
                         }
                     }
                 }
