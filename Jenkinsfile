@@ -41,9 +41,13 @@ pipeline {
 
         stage('Login & Build Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {\
-                    echo $DOCKER_PASSWORD | sudo docker login --username $DOCKER_USERNAME --password-stdin
-                    docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')\
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                script {
+                    sh """
+                    echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
+                    """
+                    docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')
+                }
               }
             }
         }
