@@ -46,7 +46,7 @@ pipeline {
                 script {
                     def dockerRegistry = 'https://index.docker.io/v1/'
                     sh """
-                    echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
+                    echo $DOCKER_PASSWORD | sudo docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                     """
                     docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')
                 }
