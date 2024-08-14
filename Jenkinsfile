@@ -46,6 +46,7 @@ pipeline {
                     echo $DOCKER_PASSWORD | sudo docker login --username $DOCKER_USERNAME --password-stdin
                     docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')
                 }
+              }
             }
         }
 
