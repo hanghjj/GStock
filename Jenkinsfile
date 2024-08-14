@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'hanghjj' // 위에서 설정한 Docker Hub 인증 정보 ID
-        DOKCER_IMAGE_NAME = 'gstock'
+        DOKCER_IMAGE_NAME = 'hanghjj/gstock'
         NODE_VERSION = '22.6.0' // Node.js 버전 이름
     }
 
@@ -39,9 +39,11 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Login & Build Docker Image') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                 script {
+                    echo $DOCKER_PASSWORD | sudo docker login --username $DOCKER_USERNAME --password-stdin
                     docker.build(DOKCER_IMAGE_NAME+':latest', '-f Dockerfile .')
                 }
             }
