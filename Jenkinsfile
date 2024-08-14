@@ -80,8 +80,7 @@ pipeline {
                                     echo "[GSTOCK] Pulled Image From Docker Hub..."
                                     
                                     
-                                     CONTAINER_ID=\$(docker ps -qf "ancestor=$DOCKER_IMAGE_NAME:latest")
-                                     echo
+                                    $CONTAINER_ID=\$(docker ps -qf "ancestor=${DOCKER_IMAGE_NAME}:latest")
                                     if [ -n "$CONTAINER_ID" ]; then
                                         echo "[GSTOCK] Stopping and removing existing container with ID $CONTAINER_ID"
                                         docker stop \$CONTAINER_ID
@@ -95,8 +94,8 @@ pipeline {
                                     echo "[GSTOCK] Running Docker container..."
                                     docker run -d -p 8080:8080 --name Gstock ${DOCKER_IMAGE_NAME}:latest 
                                     echo "[GSTOCK] Docker container executed"  
+                                EOF        
                             """
-
                             sh(script: sshCommand)
                         }
                     }
