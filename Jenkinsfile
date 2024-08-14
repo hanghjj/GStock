@@ -68,19 +68,36 @@ pipeline {
                     script {
                         withEnv(['DOCKER_IMAGE_NAME=hanghjj/gstock']) {
                             def dockerRegistry = 'https://index.docker.io/v1/'
-                            sh """
+                            def sshCommand = """
                             # SSH를 통해 원격 서버에 연결하여 Docker Hub에 로그인하고 이미지 빌드 및 푸시 수행
-                            ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << "EOF"
-                                # Docker Hub에 로그인
-                                echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
-                                
-                                # Docker 이미지 Pull
-                                docker pull ${DOCKER_IMAGE_NAME}:latest
-                                
-                                # Docker Container Run
-                                docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:latest 
-                            EOF
+                                ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << "EOF"
+                                    # Docker Hub에 로그인
+                                    echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
+                                    
+                                    # Docker 이미지 Pull
+                                    echo "[GSTOCK] Pulling Docker Image From Docker Hub..."
+                                    docker pull ${DOCKER_IMAGE_NAME}:latest
+                                    echo "[GSTOCK] Pulled Image From Docker Hub..."
+                                    
+                                    
+                                     CONTAINER_ID=\$(docker ps -q --filter "ancestor=\$DOCKER_IMAGE_NAME:latest")
+                                    if [ -n "\$CONTAINER_ID" ]; then
+                                        echo "[GSTOCK] Stopping and removing existing container with ID \$CONTAINER_ID"
+                                        docker stop \$CONTAINER_ID
+                                        docker rm \$CONTAINER_ID
+                                    else
+                                        echo "[GSTOCK] No existing container found"
+                                    fi
+                                    
+                                    
+                                    # Docker Container Run
+                                    echo "[GSTOCK] Running Docker container..."
+                                    docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:latest 
+                                    echo "[GSTOCK] Docker container executed"  
+                                EOF
                             """
+
+                            sh(script: sshCommand)
                         }
                     }
                 }
