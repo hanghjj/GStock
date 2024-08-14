@@ -8,7 +8,7 @@ pipeline {
         SSH_KEY_ID = 'ORACLE_CLOUD_KEY_PRIVATE'
         REMOTE_USER = 'ubuntu'
         REMOTE_SERVER = '144.24.88.59'
-        SERVER_PORT = '22'
+        SSH_PORT = '22'
     }
 
     tools {
