@@ -78,7 +78,7 @@ pipeline {
                                 docker pull ${DOCKER_IMAGE_NAME}:latest
                                 
                                 # Docker Container Run
-                                docker run -d --name gstock_container ${DOCKER_IMAGE_NAME}:latest
+                                docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:latest 
                             EOF
                             """
                         }
