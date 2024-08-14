@@ -70,7 +70,7 @@ pipeline {
                             def dockerRegistry = 'https://index.docker.io/v1/'
                             sh """
                             # SSH를 통해 원격 서버에 연결하여 Docker Hub에 로그인하고 이미지 빌드 및 푸시 수행
-                            ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << 'EOF'
+                            ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << "EOF"
                                 # Docker Hub에 로그인
                                 echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                                 
