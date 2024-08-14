@@ -73,7 +73,7 @@ pipeline {
                             echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                             
                             # Docker 이미지 Pull
-                            docker pull ${DOCKER_IMAGE_NAME}:latest .
+                            docker pull ${DOCKER_IMAGE_NAME}:latest
                             
                             # Docker Container Run
                             docker run -d --name gstock_container ${DOCKER_IMAGE_NAME}:latest
