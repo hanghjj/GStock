@@ -66,11 +66,12 @@ pipeline {
                 withCredentials([file(credentialsId: SSH_KEY_ID, variable: 'SSH_KEY_FILE'),
                                  usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
-                        sh '''
+                        def dockerRegistry = 'https://index.docker.io/v1/'
+                        sh """
                         # SSH를 통해 원격 서버에 연결하여 Docker Hub에 로그인하고 이미지 빌드 및 푸시 수행
                         ssh -i $SSH_KEY_FILE -p ${SSH_PORT} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} << 'EOF'
                             # Docker Hub에 로그인
-                            echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+                            echo $DOCKER_PASSWORD | docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                             
                             # Docker 이미지 Pull
                             docker pull ${DOCKER_IMAGE_NAME}:latest
@@ -78,7 +79,7 @@ pipeline {
                             # Docker Container Run
                             docker run -d --name gstock_container ${DOCKER_IMAGE_NAME}:latest
                         EOF
-                        '''
+                        """
                     }
                 }
 
