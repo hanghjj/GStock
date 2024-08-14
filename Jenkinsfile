@@ -48,7 +48,9 @@ pipeline {
                     sh """
                     echo $DOCKER_PASSWORD | sudo docker login $dockerRegistry --username $DOCKER_USERNAME --password-stdin
                     """
-                    sh "sudo docker build -t $DOCKER_IMAGE_NAME:latest -f Dockerfile ."
+                    withEnv(['DOCKER_IMAGE_NAME=hanghjj/gstock']) {
+                        sh "sudo docker build -t $DOCKER_IMAGE_NAME:latest -f Dockerfile ."
+                    }
                 }
               }
             }
@@ -58,7 +60,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        sh "sudo docker push ${DOCKER_IMAGE_NAME}:latest"
+                        withEnv(['DOCKER_IMAGE_NAME=hanghjj/gstock']) {
+                            sh "sudo docker push ${DOCKER_IMAGE_NAME}:latest"
+                        }
                     }
                 }
             }
