@@ -39,7 +39,7 @@ pipeline {
             }
         }
 
-        stage('Login & Build Docker Image') {
+        stage('Login & Build Docker Image & Push to Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
 
@@ -50,21 +50,10 @@ pipeline {
                     """
                     withEnv(['DOCKER_IMAGE_NAME=hanghjj/gstock']) {
                         sh "sudo docker build -t $DOCKER_IMAGE_NAME:latest -f Dockerfile ."
+                        sh "sudo docker push ${DOCKER_IMAGE_NAME}:latest"
                     }
                 }
               }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        withEnv(['DOCKER_IMAGE_NAME=hanghjj/gstock']) {
-                            sh "sudo docker push ${DOCKER_IMAGE_NAME}:latest"
-                        }
-                    }
-                }
             }
         }
 
